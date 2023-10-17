@@ -1,0 +1,4 @@
+node_modules
+prisma/query.ts
+# Keep environment variables out of version control
+.env
