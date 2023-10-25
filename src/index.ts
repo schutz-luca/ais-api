@@ -1,152 +1,77 @@
-import { Prisma, PrismaClient } from '@prisma/client'
 import express from 'express'
+import Shopify from 'shopify-api-node';
+import { DimonaOrderCreation, DimonaOrderItem } from './model/dimona.model';
+import { ShopifyOrder } from './model/shopify.model';
+import { getFilesIdByItem } from './services/drive.service';
 
-const prisma = new PrismaClient()
+// import { orderExample } from './examples/order.example';
+
+const port = process.env.PORT;
 const app = express()
 
 app.use(express.json())
+const shopify = new Shopify({
+  shopName: 'store.myshopify.com',
+  accessToken: 'access_token'
+});
 
-app.post(`/signup`, async (req, res) => {
-  const { name, email, posts } = req.body
 
-  const postData = posts?.map((post: Prisma.PostCreateInput) => {
-    return { title: post?.title, content: post?.content }
-  })
+app.post(`/order-paid`, async (req, res) => {
+  const result: ShopifyOrder = req.body
 
-  const result = await prisma.user.create({
-    data: {
-      name,
-      email,
-      posts: {
-        create: postData,
-      },
+  // Use orderExample to simulate Shopify webhook trigger
+  // const result = orderExample
+
+  const items: DimonaOrderItem[] = await Promise.all(result.line_items.map(async (product) => {
+    const variant = await shopify.productVariant.get(product.variant_id);
+
+    console.log('')
+    const filesLinks = await getFilesIdByItem(product.sku, variant?.option2);
+
+    return {
+      sku: variant.sku,
+      dimona_sku_id: '10524110108',
+      name: product.name,
+      qty: product.fulfillable_quantity,
+      ...filesLinks
+    } as DimonaOrderItem
+  }))
+
+
+  const street = result.shipping_address.address1.split(',')[0].trim();
+  const number = result.shipping_address.address1.split(',')[1].trim();
+
+  const dimonaOrder: DimonaOrderCreation = {
+    order_id: `${result.id}`,
+    customer_name: [result.customer.first_name, result.customer.last_name].join(' '),
+    customer_email: result.customer.email,
+    customer_document: result.billing_address.company,
+    address: {
+      city: result.shipping_address.city,
+      zipcode: result.shipping_address.zip,
+      state: result.shipping_address.province,
+      neightborhood: result.shipping_address.address2,
+      street,
+      number
     },
-  })
-  res.json(result)
-})
-
-app.post(`/post`, async (req, res) => {
-  const { title, content, authorEmail } = req.body
-  const result = await prisma.post.create({
-    data: {
-      title,
-      content,
-      author: { connect: { email: authorEmail } },
-    },
-  })
-  res.json(result)
-})
-
-app.put('/post/:id/views', async (req, res) => {
-  const { id } = req.params
-
-  try {
-    const post = await prisma.post.update({
-      where: { id: Number(id) },
-      data: {
-        viewCount: {
-          increment: 1,
-        },
-      },
-    })
-
-    res.json(post)
-  } catch (error) {
-    res.json({ error: `Post with ID ${id} does not exist in the database` })
+    items
   }
-})
 
-app.put('/publish/:id', async (req, res) => {
-  const { id } = req.params
+  console.log('💙 Sending Dimona order:', dimonaOrder);
 
-  try {
-    const postData = await prisma.post.findUnique({
-      where: { id: Number(id) },
-      select: {
-        published: true,
-      },
-    })
-
-    const updatedPost = await prisma.post.update({
-      where: { id: Number(id) || undefined },
-      data: { published: !postData?.published },
-    })
-    res.json(updatedPost)
-  } catch (error) {
-    res.json({ error: `Post with ID ${id} does not exist in the database` })
-  }
-})
-
-app.delete(`/post/:id`, async (req, res) => {
-  const { id } = req.params
-  const post = await prisma.post.delete({
-    where: {
-      id: Number(id),
+  const dimonaResult = await fetch('https://camisadimona.com.br/api/v2/order', {
+    method: 'POST',
+    headers: {
+      'api-key': 'api_key',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     },
-  })
-  res.json(post)
-})
-
-app.get('/users', async (req, res) => {
-  const users = await prisma.user.findMany()
-  res.json(users)
-})
-
-app.get('/user/:id/drafts', async (req, res) => {
-  const { id } = req.params
-
-  const drafts = await prisma.user
-    .findUnique({
-      where: {
-        id: Number(id),
-      },
-    })
-    .posts({
-      where: { published: false },
-    })
-
-  res.json(drafts)
-})
-
-app.get(`/post/:id`, async (req, res) => {
-  const { id }: { id?: string } = req.params
-
-  const post = await prisma.post.findUnique({
-    where: { id: Number(id) },
-  })
-  res.json(post)
-})
-
-app.get('/feed', async (req, res) => {
-  const { searchString, skip, take, orderBy } = req.query
-
-  const or: Prisma.PostWhereInput = searchString
-    ? {
-        OR: [
-          { title: { contains: searchString as string } },
-          { content: { contains: searchString as string } },
-        ],
-      }
-    : {}
-
-  const posts = await prisma.post.findMany({
-    where: {
-      published: true,
-      ...or,
-    },
-    include: { author: true },
-    take: Number(take) || undefined,
-    skip: Number(skip) || undefined,
-    orderBy: {
-      updatedAt: orderBy as Prisma.SortOrder,
-    },
+    body: JSON.stringify(dimonaOrder)
   })
 
-  res.json(posts)
+  res.json(await dimonaResult.json())
 })
 
-const server = app.listen(3000, () =>
-  console.log(`
-🚀 Server ready at: http://localhost:3000
-⭐️ See sample requests: http://pris.ly/e/ts/rest-express#3-using-the-rest-api`),
+app.listen(port, () =>
+  console.log(`🚀 Server ready at: http://localhost:${port}`),
 )
