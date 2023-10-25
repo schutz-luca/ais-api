@@ -2,9 +2,8 @@
   "name": "ais-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "nodemon src/index.ts",
     "query": "npx ts-node script.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,12 +13,16 @@
   "devDependencies": {
     "@types/express": "^4.17.19",
     "@types/node": "^20.8.6",
+    "nodemon": "^3.0.1",
     "prisma": "^5.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "@prisma/client": "^5.4.2",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "googleapis": "^105.0.0",
+    "shopify-api-node": "^3.12.7"
   }
 }
