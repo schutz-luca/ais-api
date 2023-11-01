@@ -74,6 +74,9 @@ async function authorize() {
 function handleImageLinks(fileName: string, file: DriveFile, fileLinks: FilesLinks) {
     let fileWebLink = file.webContentLink;
 
+    if (!fileLinks.designs || !fileLinks.mocks)
+        return
+
     if (fileName.includes('df') || fileName.includes('design'))
         fileLinks.designs[0] = fileWebLink
     else if (fileName.includes('db'))
@@ -118,6 +121,10 @@ export async function getFilesIdByItem(sku: string, color: string | null | undef
         handleImageLinks(fileName, file, fileLinks)
 
     }))
+
+    // Delete images if they don't exist, forcing to add images manually
+    if (fileLinks.designs?.length === 0) delete fileLinks.designs
+    if (fileLinks.mocks?.length === 0) delete fileLinks.mocks
 
     return fileLinks
 }

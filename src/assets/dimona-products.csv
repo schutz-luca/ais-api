@@ -1,0 +1,577 @@
+﻿sku;produto;estilo;cor;tamanho
+010101110108;Dimona Classic;T-Shirt;Branco;P
+010101110109;Dimona Classic;T-Shirt;Branco;M
+010101110110;Dimona Classic;T-Shirt;Branco;G
+010101110111;Dimona Classic;T-Shirt;Branco;GG
+010101110112;Dimona Classic;T-Shirt;Branco;XGG
+010101118308;Dimona Classic;T-Shirt;Preto;P
+010101118309;Dimona Classic;T-Shirt;Preto;M
+010101118310;Dimona Classic;T-Shirt;Preto;G
+010101118311;Dimona Classic;T-Shirt;Preto;GG
+010101118312;Dimona Classic;T-Shirt;Preto;XGG
+010101113708;Dimona Classic;T-Shirt;Azul Marinho;P
+010101113709;Dimona Classic;T-Shirt;Azul Marinho;M
+010101113710;Dimona Classic;T-Shirt;Azul Marinho;G
+010101113711;Dimona Classic;T-Shirt;Azul Marinho;GG
+010101113712;Dimona Classic;T-Shirt;Azul Marinho;XGG
+010101114908;Dimona Classic;T-Shirt;Verde Musgo;P
+010101114909;Dimona Classic;T-Shirt;Verde Musgo;M
+010101114910;Dimona Classic;T-Shirt;Verde Musgo;G
+010101114911;Dimona Classic;T-Shirt;Verde Musgo;GG
+010101114912;Dimona Classic;T-Shirt;Verde Musgo;XGG
+010101112708;Dimona Classic;T-Shirt;Laranja;P
+010101112709;Dimona Classic;T-Shirt;Laranja;M
+010101112710;Dimona Classic;T-Shirt;Laranja;G
+010101112711;Dimona Classic;T-Shirt;Laranja;GG
+010101112712;Dimona Classic;T-Shirt;Laranja;XGG
+010101114808;Dimona Classic;T-Shirt;Verde Bandeira;P
+010101114809;Dimona Classic;T-Shirt;Verde Bandeira;M
+010101114810;Dimona Classic;T-Shirt;Verde Bandeira;G
+010101114811;Dimona Classic;T-Shirt;Verde Bandeira;GG
+010101114812;Dimona Classic;T-Shirt;Verde Bandeira;XGG
+010101111608;Dimona Classic;T-Shirt;Amarelo Ouro;P
+010101111609;Dimona Classic;T-Shirt;Amarelo Ouro;M
+010101111610;Dimona Classic;T-Shirt;Amarelo Ouro;G
+010101111611;Dimona Classic;T-Shirt;Amarelo Ouro;GG
+010101111612;Dimona Classic;T-Shirt;Amarelo Ouro;XGG
+010101112008;Dimona Classic;T-Shirt;Vermelho;P
+010101112009;Dimona Classic;T-Shirt;Vermelho;M
+010101112010;Dimona Classic;T-Shirt;Vermelho;G
+010101112011;Dimona Classic;T-Shirt;Vermelho;GG
+010101112012;Dimona Classic;T-Shirt;Vermelho;XGG
+010110111408;Dimona Classic;T-Shirt;Amarelo Canário;P
+010110111409;Dimona Classic;T-Shirt;Amarelo Canário;M
+010110111410;Dimona Classic;T-Shirt;Amarelo Canário;G
+010110111411;Dimona Classic;T-Shirt;Amarelo Canário;GG
+010110111412;Dimona Classic;T-Shirt;Amarelo Canário;XGG
+010101113608;Dimona Classic;T-Shirt;Azul Royal;P
+010101113609;Dimona Classic;T-Shirt;Azul Royal;M
+010101113610;Dimona Classic;T-Shirt;Azul Royal;G
+010101113611;Dimona Classic;T-Shirt;Azul Royal;GG
+010101113612;Dimona Classic;T-Shirt;Azul Royal;XGG
+010101111308;Dimona Classic;T-Shirt;Azul Turquesa;P
+010101111309;Dimona Classic;T-Shirt;Azul Turquesa;M
+010101111310;Dimona Classic;T-Shirt;Azul Turquesa;G
+010101111311;Dimona Classic;T-Shirt;Azul Turquesa;GG
+010101111312;Dimona Classic;T-Shirt;Azul Turquesa;XGG
+010101119108;Dimona Classic;T-Shirt;Rosa Bebê;P
+010101119109;Dimona Classic;T-Shirt;Rosa Bebê;M
+010101119110;Dimona Classic;T-Shirt;Rosa Bebê;G
+010101119111;Dimona Classic;T-Shirt;Rosa Bebê;GG
+010101119112;Dimona Classic;T-Shirt;Rosa Bebê;XGG
+010101119508;Dimona Classic;T-Shirt;Rosa Pink;P
+010101119509;Dimona Classic;T-Shirt;Rosa Pink;M
+010101119510;Dimona Classic;T-Shirt;Rosa Pink;G
+010101119511;Dimona Classic;T-Shirt;Rosa Pink;GG
+010101119512;Dimona Classic;T-Shirt;Rosa Pink;XGG
+010101110208;Dimona Classic;T-Shirt;Cinza Mescla;P
+010101110209;Dimona Classic;T-Shirt;Cinza Mescla;M
+010101110210;Dimona Classic;T-Shirt;Cinza Mescla;G
+010101110211;Dimona Classic;T-Shirt;Cinza Mescla;GG
+010101110212;Dimona Classic;T-Shirt;Cinza Mescla;XGG
+010101117008;Dimona Classic;T-Shirt;Roxo;P
+010101117009;Dimona Classic;T-Shirt;Roxo;M
+010101117010;Dimona Classic;T-Shirt;Roxo;G
+010101117011;Dimona Classic;T-Shirt;Roxo;GG
+010101117012;Dimona Classic;T-Shirt;Roxo;XGG
+010101119608;Dimona Classic;T-Shirt;Vinho;P
+010101119609;Dimona Classic;T-Shirt;Vinho;M
+010101119610;Dimona Classic;T-Shirt;Vinho;G
+010101119611;Dimona Classic;T-Shirt;Vinho;GG
+010101119612;Dimona Classic;T-Shirt;Vinho;XGG
+010101119708;Dimona Classic;T-Shirt;Cinza Chumbo;P
+010101119709;Dimona Classic;T-Shirt;Cinza Chumbo;M
+010101119710;Dimona Classic;T-Shirt;Cinza Chumbo;G
+010101119711;Dimona Classic;T-Shirt;Cinza Chumbo;GG
+010101119712;Dimona Classic;T-Shirt;Cinza Chumbo;XGG
+10524110108;Dimona Classic;Baby Long;Branco;P
+10524110109;Dimona Classic;Baby Long;Branco;M
+10524110110;Dimona Classic;Baby Long;Branco;G
+10524110111;Dimona Classic;Baby Long;Branco;GG
+10524118308;Dimona Classic;Baby Long;Preto;P
+10524118309;Dimona Classic;Baby Long;Preto;M
+10524118310;Dimona Classic;Baby Long;Preto;G
+10524118311;Dimona Classic;Baby Long;Preto;GG
+10524113708;Dimona Classic;Baby Long;Azul Marinho;P
+10524113709;Dimona Classic;Baby Long;Azul Marinho;M
+10524113710;Dimona Classic;Baby Long;Azul Marinho;G
+10524113711;Dimona Classic;Baby Long;Azul Marinho;GG
+10524112708;Dimona Classic;Baby Long;Laranja;P
+10524112709;Dimona Classic;Baby Long;Laranja;M
+10524112710;Dimona Classic;Baby Long;Laranja;G
+10524112711;Dimona Classic;Baby Long;Laranja;GG
+10524114808;Dimona Classic;Baby Long;Verde Bandeira;P
+10524114809;Dimona Classic;Baby Long;Verde Bandeira;M
+10524114810;Dimona Classic;Baby Long;Verde Bandeira;G
+10524114811;Dimona Classic;Baby Long;Verde Bandeira;GG
+10524112008;Dimona Classic;Baby Long;Vermelho;P
+10524112009;Dimona Classic;Baby Long;Vermelho;M
+10524112010;Dimona Classic;Baby Long;Vermelho;G
+10524112011;Dimona Classic;Baby Long;Vermelho;GG
+10524111408;Dimona Classic;Baby Long;Amarelo Canário;P
+10524111409;Dimona Classic;Baby Long;Amarelo Canário;M
+10524111410;Dimona Classic;Baby Long;Amarelo Canário;G
+10524111411;Dimona Classic;Baby Long;Amarelo Canário;GG
+10524111608;Dimona Classic;Baby Long;Amarelo Ouro;P
+10524111609;Dimona Classic;Baby Long;Amarelo Ouro;M
+10524111610;Dimona Classic;Baby Long;Amarelo Ouro;G
+10524111611;Dimona Classic;Baby Long;Amarelo Ouro;GG
+10524113608;Dimona Classic;Baby Long;Azul Royal;P
+10524113609;Dimona Classic;Baby Long;Azul Royal;M
+10524113610;Dimona Classic;Baby Long;Azul Royal;G
+10524113611;Dimona Classic;Baby Long;Azul Royal;GG
+10524113508;Dimona Classic;Baby Long;Azul Turquesa;P
+10524113509;Dimona Classic;Baby Long;Azul Turquesa;M
+10524113510;Dimona Classic;Baby Long;Azul Turquesa;G
+10524113511;Dimona Classic;Baby Long;Azul Turquesa;GG
+10524119108;Dimona Classic;Baby Long;Rosa Bebê;P
+10524119109;Dimona Classic;Baby Long;Rosa Bebê;M
+10524119110;Dimona Classic;Baby Long;Rosa Bebê;G
+10524119111;Dimona Classic;Baby Long;Rosa Bebê;GG
+10524119508;Dimona Classic;Baby Long;Rosa Pink;P
+10524119509;Dimona Classic;Baby Long;Rosa Pink;M
+10524119510;Dimona Classic;Baby Long;Rosa Pink;G
+10524119511;Dimona Classic;Baby Long;Rosa Pink;GG
+10524110208;Dimona Classic;Baby Long;Cinza Mescla;P
+10524110209;Dimona Classic;Baby Long;Cinza Mescla;M
+10524110210;Dimona Classic;Baby Long;Cinza Mescla;G
+10524110211;Dimona Classic;Baby Long;Cinza Mescla;GG
+10101110101;Classic Infantil;T-shirt;Branco;2 anos
+10101110102;Classic Infantil;T-shirt;Branco;4 anos
+10101110103;Classic Infantil;T-shirt;Branco;6 anos
+10101110104;Classic Infantil;T-shirt;Branco;8 anos
+10101110105;Classic Infantil;T-shirt;Branco;10 anos
+10101110106;Classic Infantil;T-shirt;Branco;12 anos
+10101110107;Classic Infantil;T-shirt;Branco;14 anos
+10101118301;Classic Infantil;T-shirt;Preto;2 anos
+10101118302;Classic Infantil;T-shirt;Preto;4 anos
+10101118303;Classic Infantil;T-shirt;Preto;6 anos
+10101118304;Classic Infantil;T-shirt;Preto;8 anos
+10101118305;Classic Infantil;T-shirt;Preto;10 anos
+10101118306;Classic Infantil;T-shirt;Preto;12 anos
+10101118307;Classic Infantil;T-shirt;Preto;14 anos
+10101113701;Classic Infantil;T-shirt;Azul Marinho;2 anos
+10101113702;Classic Infantil;T-shirt;Azul Marinho;4 anos
+10101113703;Classic Infantil;T-shirt;Azul Marinho;6 anos
+10101113704;Classic Infantil;T-shirt;Azul Marinho;8 anos
+10101113705;Classic Infantil;T-shirt;Azul Marinho;10 anos
+10101113706;Classic Infantil;T-shirt;Azul Marinho;12 anos
+10101113707;Classic Infantil;T-shirt;Azul Marinho;14 anos
+10101112001;Classic Infantil;T-shirt;Vermelho;2 anos
+10101112002;Classic Infantil;T-shirt;Vermelho;4 anos
+10101112003;Classic Infantil;T-shirt;Vermelho;6 anos
+10101112004;Classic Infantil;T-shirt;Vermelho;8 anos
+10101112005;Classic Infantil;T-shirt;Vermelho;10 anos
+10101112006;Classic Infantil;T-shirt;Vermelho;12 anos
+10101112007;Classic Infantil;T-shirt;Vermelho;14 anos
+10101114801;Classic Infantil;T-shirt;Verde Bandeira;2 anos
+10101114802;Classic Infantil;T-shirt;Verde Bandeira;4 anos
+10101114803;Classic Infantil;T-shirt;Verde Bandeira;6 anos
+10101114804;Classic Infantil;T-shirt;Verde Bandeira;8 anos
+10101114805;Classic Infantil;T-shirt;Verde Bandeira;10 anos
+10101114806;Classic Infantil;T-shirt;Verde Bandeira;12 anos
+10101114807;Classic Infantil;T-shirt;Verde Bandeira;14 anos
+10101111401;Classic Infantil;T-shirt;Amarelo Canário;2 anos
+10101111402;Classic Infantil;T-shirt;Amarelo Canário;4 anos
+10101111403;Classic Infantil;T-shirt;Amarelo Canário;6 anos
+10101111404;Classic Infantil;T-shirt;Amarelo Canário;8 anos
+10101111405;Classic Infantil;T-shirt;Amarelo Canário;10 anos
+10101111406;Classic Infantil;T-shirt;Amarelo Canário;12 anos
+10101111407;Classic Infantil;T-shirt;Amarelo Canário;14 anos
+10101119501;Classic Infantil;T-shirt;Rosa Pink;2 anos
+10101119502;Classic Infantil;T-shirt;Rosa Pink;4 anos
+10101119503;Classic Infantil;T-shirt;Rosa Pink;6 anos
+10101119504;Classic Infantil;T-shirt;Rosa Pink;8 anos
+10101119505;Classic Infantil;T-shirt;Rosa Pink;10 anos
+10101119506;Classic Infantil;T-shirt;Rosa Pink;12 anos
+10101119507;Classic Infantil;T-shirt;Rosa Pink;14 anos
+10101119101;Classic Infantil;T-shirt;Rosa Bebê;2 anos
+10101119102;Classic Infantil;T-shirt;Rosa Bebê;4 anos
+10101119103;Classic Infantil;T-shirt;Rosa Bebê;6 anos
+10101119104;Classic Infantil;T-shirt;Rosa Bebê;8 anos
+10101119105;Classic Infantil;T-shirt;Rosa Bebê;10 anos
+10101119106;Classic Infantil;T-shirt;Rosa Bebê;12 anos
+10101119107;Classic Infantil;T-shirt;Rosa Bebê;14 anos
+10101111301;Classic Infantil;T-shirt;Azul Turquesa;2 anos
+10101111302;Classic Infantil;T-shirt;Azul Turquesa;4 anos
+10101111303;Classic Infantil;T-shirt;Azul Turquesa;6 anos
+10101111304;Classic Infantil;T-shirt;Azul Turquesa;8 anos
+10101111305;Classic Infantil;T-shirt;Azul Turquesa;10 anos
+10101111306;Classic Infantil;T-shirt;Azul Turquesa;12 anos
+10101111307;Classic Infantil;T-shirt;Azul Turquesa;14 anos
+10101110201;Classic Infantil;T-shirt;Cinza Mescla;2 anos
+10101110202;Classic Infantil;T-shirt;Cinza Mescla;4 anos
+10101110203;Classic Infantil;T-shirt;Cinza Mescla;6 anos
+10101110204;Classic Infantil;T-shirt;Cinza Mescla;8 anos
+10101110205;Classic Infantil;T-shirt;Cinza Mescla;10 anos
+10101110206;Classic Infantil;T-shirt;Cinza Mescla;12 anos
+10101110207;Classic Infantil;T-shirt;Cinza Mescla;14 anos
+10101112701;Classic Infantil;T-shirt;Laranja;2 anos
+10101112702;Classic Infantil;T-shirt;Laranja;4 anos
+10101112703;Classic Infantil;T-shirt;Laranja;6 anos
+10101112704;Classic Infantil;T-shirt;Laranja;8 anos
+10101112705;Classic Infantil;T-shirt;Laranja;10 anos
+10101112706;Classic Infantil;T-shirt;Laranja;12 anos
+10101112707;Classic Infantil;T-shirt;Laranja;14 anos
+10101113601;Classic Infantil;T-shirt;Azul Royal;2 anos
+10101113602;Classic Infantil;T-shirt;Azul Royal;4 anos
+10101113603;Classic Infantil;T-shirt;Azul Royal;6 anos
+10101113604;Classic Infantil;T-shirt;Azul Royal;8 anos
+10101113605;Classic Infantil;T-shirt;Azul Royal;10 anos
+10101113606;Classic Infantil;T-shirt;Azul Royal;12 anos
+10101113607;Classic Infantil;T-shirt;Azul Royal;14 anos
+10101111601;Classic Infantil;T-shirt;Amarelo Ouro;2 anos
+10101111602;Classic Infantil;T-shirt;Amarelo Ouro;4 anos
+10101111603;Classic Infantil;T-shirt;Amarelo Ouro;6 anos
+10101111604;Classic Infantil;T-shirt;Amarelo Ouro;8 anos
+10101111605;Classic Infantil;T-shirt;Amarelo Ouro;10 anos
+10101111606;Classic Infantil;T-shirt;Amarelo Ouro;12 anos
+10101111607;Classic Infantil;T-shirt;Amarelo Ouro;14 anos
+010201110108;Dimona Classic;Regata;Branco;P
+010201110109;Dimona Classic;Regata;Branco;M
+010201110110;Dimona Classic;Regata;Branco;G
+010201110111;Dimona Classic;Regata;Branco;GG
+010201110112;Dimona Classic;Regata;Branco;XGG
+010201118308;Dimona Classic;Regata;Preto;P
+010201118309;Dimona Classic;Regata;Preto;M
+010201118310;Dimona Classic;Regata;Preto;G
+010201118311;Dimona Classic;Regata;Preto;GG
+010201118312;Dimona Classic;Regata;Preto;XGG
+010201110208;Dimona Classic;Regata;Cinza Mescla;P
+010201110209;Dimona Classic;Regata;Cinza Mescla;M
+010201110210;Dimona Classic;Regata;Cinza Mescla;G
+010201110211;Dimona Classic;Regata;Cinza Mescla;GG
+010201110212;Dimona Classic;Regata;Cinza Mescla;XGG
+010301110108;Dimona Classic;Machão;Branco;P
+010301110109;Dimona Classic;Machão;Branco;M
+010301110110;Dimona Classic;Machão;Branco;G
+010301110111;Dimona Classic;Machão;Branco;GG
+010301110112;Dimona Classic;Machão;Branco;XGG
+010301118308;Dimona Classic;Machão;Preto;P
+010301118309;Dimona Classic;Machão;Preto;M
+010301118310;Dimona Classic;Machão;Preto;G
+010301118311;Dimona Classic;Machão;Preto;GG
+010301118312;Dimona Classic;Machão;Preto;XGG
+010301110208;Dimona Classic;Machão;Cinza Mescla;P
+010301110209;Dimona Classic;Machão;Cinza Mescla;M
+010301110210;Dimona Classic;Machão;Cinza Mescla;G
+010301110211;Dimona Classic;Machão;Cinza Mescla;GG
+010301110212;Dimona Classic;Machão;Cinza Mescla;XGG
+010401110108;Classic Manga Longa;Manga Longa;Branco;P
+010401110109;Classic Manga Longa;Manga Longa;Branco;M
+010401110110;Classic Manga Longa;Manga Longa;Branco;G
+010401110111;Classic Manga Longa;Manga Longa;Branco;GG
+010401110112;Classic Manga Longa;Manga Longa;Branco;XGG
+010401118308;Classic Manga Longa;Manga Longa;Preto;P
+010401118309;Classic Manga Longa;Manga Longa;Preto;M
+010401118310;Classic Manga Longa;Manga Longa;Preto;G
+010401118311;Classic Manga Longa;Manga Longa;Preto;GG
+010401118312;Classic Manga Longa;Manga Longa;Preto;XGG
+010401110208;Classic Manga Longa;Manga Longa;Cinza Mescla;P
+010401110209;Classic Manga Longa;Manga Longa;Cinza Mescla;M
+010401110210;Classic Manga Longa;Manga Longa;Cinza Mescla;G
+010401110211;Classic Manga Longa;Manga Longa;Cinza Mescla;GG
+010401110212;Classic Manga Longa;Manga Longa;Cinza Mescla;XGG
+010110110108;Dimona Quality;T-Shirt;Branco;P
+010110110109;Dimona Quality;T-Shirt;Branco;M
+010110110110;Dimona Quality;T-Shirt;Branco;G
+010110110111;Dimona Quality;T-Shirt;Branco;GG
+010110110112;Dimona Quality;T-Shirt;Branco;XGG
+010110110115;Dimona Quality;T-Shirt;Branco;G1
+010110110116;Dimona Quality;T-Shirt;Branco;G2
+010110110117;Dimona Quality;T-Shirt;Branco;G3
+010110110118;Dimona Quality;T-Shirt;Branco;G4
+010110118308;Dimona Quality;T-Shirt;Preto;P
+010110118309;Dimona Quality;T-Shirt;Preto;M
+010110118310;Dimona Quality;T-Shirt;Preto;G
+010110118311;Dimona Quality;T-Shirt;Preto;GG
+010110118312;Dimona Quality;T-Shirt;Preto;XGG
+010110118315;Dimona Quality;T-Shirt;Preto;G1
+010110118316;Dimona Quality;T-Shirt;Preto;G2
+010110118317;Dimona Quality;T-Shirt;Preto;G3
+010110118318;Dimona Quality;T-Shirt;Preto;G4
+010110113708;Dimona Quality;T-Shirt;Azul Marinho;P
+010110113709;Dimona Quality;T-Shirt;Azul Marinho;M
+010110113710;Dimona Quality;T-Shirt;Azul Marinho;G
+010110113711;Dimona Quality;T-Shirt;Azul Marinho;GG
+010110113712;Dimona Quality;T-Shirt;Azul Marinho;XGG
+010110113715;Dimona Quality;T-Shirt;Azul Marinho;G1
+010110113716;Dimona Quality;T-Shirt;Azul Marinho;G2
+010110113717;Dimona Quality;T-Shirt;Azul Marinho;G3
+010110113718;Dimona Quality;T-Shirt;Azul Marinho;G4
+010110112708;Dimona Quality;T-Shirt;Laranja;P
+010110112709;Dimona Quality;T-Shirt;Laranja;M
+010110112710;Dimona Quality;T-Shirt;Laranja;G
+010110112711;Dimona Quality;T-Shirt;Laranja;GG
+010110112712;Dimona Quality;T-Shirt;Laranja;XGG
+010110114808;Dimona Quality;T-Shirt;Verde Bandeira;P
+010110114809;Dimona Quality;T-Shirt;Verde Bandeira;M
+010110114810;Dimona Quality;T-Shirt;Verde Bandeira;G
+010110114811;Dimona Quality;T-Shirt;Verde Bandeira;GG
+010110114812;Dimona Quality;T-Shirt;Verde Bandeira;XGG
+010110112008;Dimona Quality;T-Shirt;Vermelho;P
+010110112009;Dimona Quality;T-Shirt;Vermelho;M
+010110112010;Dimona Quality;T-Shirt;Vermelho;G
+010110112011;Dimona Quality;T-Shirt;Vermelho;GG
+010110112012;Dimona Quality;T-Shirt;Vermelho;XGG
+010110111608;Dimona Quality;T-Shirt;Amarelo Ouro;P
+010110111609;Dimona Quality;T-Shirt;Amarelo Ouro;M
+010110111610;Dimona Quality;T-Shirt;Amarelo Ouro;G
+010110111611;Dimona Quality;T-Shirt;Amarelo Ouro;GG
+010110111612;Dimona Quality;T-Shirt;Amarelo Ouro;XGG
+010110114908;Dimona Quality;T-Shirt;Verde Musgo;P
+010110114909;Dimona Quality;T-Shirt;Verde Musgo;M
+010110114910;Dimona Quality;T-Shirt;Verde Musgo;G
+010110114911;Dimona Quality;T-Shirt;Verde Musgo;GG
+010110114912;Dimona Quality;T-Shirt;Verde Musgo;XGG
+010110111408;Dimona Quality;T-Shirt;Amarelo Canário;P
+010110111409;Dimona Quality;T-Shirt;Amarelo Canário;M
+010110111410;Dimona Quality;T-Shirt;Amarelo Canário;G
+010110111411;Dimona Quality;T-Shirt;Amarelo Canário;GG
+010110111412;Dimona Quality;T-Shirt;Amarelo Canário;XGG
+010110113608;Dimona Quality;T-Shirt;Azul Royal;P
+010110113609;Dimona Quality;T-Shirt;Azul Royal;M
+010110113610;Dimona Quality;T-Shirt;Azul Royal;G
+010110113611;Dimona Quality;T-Shirt;Azul Royal;GG
+010110113612;Dimona Quality;T-Shirt;Azul Royal;XGG
+010110119508;Dimona Quality;T-Shirt;Rosa Pink;P
+010110119509;Dimona Quality;T-Shirt;Rosa Pink;M
+010110119510;Dimona Quality;T-Shirt;Rosa Pink;G
+010110119511;Dimona Quality;T-Shirt;Rosa Pink;GG
+010110119512;Dimona Quality;T-Shirt;Rosa Pink;XGG
+010110119608;Dimona Quality;T-Shirt;Vinho;P
+010110119609;Dimona Quality;T-Shirt;Vinho;M
+010110119610;Dimona Quality;T-Shirt;Vinho;G
+010110119611;Dimona Quality;T-Shirt;Vinho;GG
+010110119612;Dimona Quality;T-Shirt;Vinho;XGG
+010110110208;Dimona Quality;T-Shirt;Cinza Mescla;P
+010110110209;Dimona Quality;T-Shirt;Cinza Mescla;M
+010110110210;Dimona Quality;T-Shirt;Cinza Mescla;G
+010110110211;Dimona Quality;T-Shirt;Cinza Mescla;GG
+010110110212;Dimona Quality;T-Shirt;Cinza Mescla;XGG
+010110110215;Dimona Quality;T-Shirt;Cinza Mescla;G1
+010110110216;Dimona Quality;T-Shirt;Cinza Mescla;G2
+010110110217;Dimona Quality;T-Shirt;Cinza Mescla;G3
+010110110218;Dimona Quality;T-Shirt;Cinza Mescla;G4
+010522110108;Dimona Quality;Baby Long;Branco;P
+010522110109;Dimona Quality;Baby Long;Branco;M
+010522110110;Dimona Quality;Baby Long;Branco;G
+010522110111;Dimona Quality;Baby Long;Branco;GG
+010522118308;Dimona Quality;Baby Long;Preto;P
+010522118309;Dimona Quality;Baby Long;Preto;M
+010522118310;Dimona Quality;Baby Long;Preto;G
+010522118311;Dimona Quality;Baby Long;Preto;GG
+010522113708;Dimona Quality;Baby Long;Azul Marinho;P
+010522113709;Dimona Quality;Baby Long;Azul Marinho;M
+010522113710;Dimona Quality;Baby Long;Azul Marinho;G
+010522113711;Dimona Quality;Baby Long;Azul Marinho;GG
+010522112708;Dimona Quality;Baby Long;Laranja;P
+010522112709;Dimona Quality;Baby Long;Laranja;M
+010522112710;Dimona Quality;Baby Long;Laranja;G
+010522112711;Dimona Quality;Baby Long;Laranja;GG
+010522112008;Dimona Quality;Baby Long;Vermelho;P
+010522112009;Dimona Quality;Baby Long;Vermelho;M
+010522112010;Dimona Quality;Baby Long;Vermelho;G
+010522112011;Dimona Quality;Baby Long;Vermelho;GG
+010522111408;Dimona Quality;Baby Long;Amarelo Canário;P
+010522111409;Dimona Quality;Baby Long;Amarelo Canário;M
+010522111410;Dimona Quality;Baby Long;Amarelo Canário;G
+010522111411;Dimona Quality;Baby Long;Amarelo Canário;GG
+010522113608;Dimona Quality;Baby Long;Azul Royal;P
+010522113609;Dimona Quality;Baby Long;Azul Royal;M
+010522113610;Dimona Quality;Baby Long;Azul Royal;G
+010522113611;Dimona Quality;Baby Long;Azul Royal;GG
+010522119508;Dimona Quality;Baby Long;Rosa Pink;P
+010522119509;Dimona Quality;Baby Long;Rosa Pink;M
+010522119510;Dimona Quality;Baby Long;Rosa Pink;G
+010522119511;Dimona Quality;Baby Long;Rosa Pink;GG
+010522110208;Dimona Quality;Baby Long;Cinza Mescla;P
+010522110209;Dimona Quality;Baby Long;Cinza Mescla;M
+010522110210;Dimona Quality;Baby Long;Cinza Mescla;G
+010522110211;Dimona Quality;Baby Long;Cinza Mescla;GG
+11136110108;Cropped Quality;Cropped;Branco;P
+11136110109;Cropped Quality;Cropped;Branco;M
+11136110110;Cropped Quality;Cropped;Branco;G
+11136110111;Cropped Quality;Cropped;Branco;GG
+11910118308;Cropped Quality;Cropped;Preto;P
+11910118309;Cropped Quality;Cropped;Preto;M
+11910118310;Cropped Quality;Cropped;Preto;G
+11910118311;Cropped Quality;Cropped;Preto;GG
+010110110101;Quality Infantil;T-shirt;Branco;2 anos
+010110110102;Quality Infantil;T-shirt;Branco;4 anos
+010110110103;Quality Infantil;T-shirt;Branco;6 anos
+010110110104;Quality Infantil;T-shirt;Branco;8 anos
+010110110105;Quality Infantil;T-shirt;Branco;10 anos
+010110110106;Quality Infantil;T-shirt;Branco;12 anos
+010110110107;Quality Infantil;T-shirt;Branco;14 anos
+010110111401;Quality Infantil;T-shirt;Amarelo Canário;2 anos
+010110111402;Quality Infantil;T-shirt;Amarelo Canário;4 anos
+010110111403;Quality Infantil;T-shirt;Amarelo Canário;6 anos
+010110111404;Quality Infantil;T-shirt;Amarelo Canário;8 anos
+010110111405;Quality Infantil;T-shirt;Amarelo Canário;10 anos
+010110111406;Quality Infantil;T-shirt;Amarelo Canário;12 anos
+010110111407;Quality Infantil;T-shirt;Amarelo Canário;14 anos
+010110112001;Quality Infantil;T-shirt;Vermelho;2 anos
+010110112002;Quality Infantil;T-shirt;Vermelho;4 anos
+010110112003;Quality Infantil;T-shirt;Vermelho;6 anos
+010110112004;Quality Infantil;T-shirt;Vermelho;8 anos
+010110112005;Quality Infantil;T-shirt;Vermelho;10 anos
+010110112006;Quality Infantil;T-shirt;Vermelho;12 anos
+010110112007;Quality Infantil;T-shirt;Vermelho;14 anos
+010110113601;Quality Infantil;T-shirt;Azul Royal;2 anos
+010110113602;Quality Infantil;T-shirt;Azul Royal;4 anos
+010110113603;Quality Infantil;T-shirt;Azul Royal;6 anos
+010110113604;Quality Infantil;T-shirt;Azul Royal;8 anos
+010110113605;Quality Infantil;T-shirt;Azul Royal;10 anos
+010110113606;Quality Infantil;T-shirt;Azul Royal;12 anos
+010110113607;Quality Infantil;T-shirt;Azul Royal;14 anos
+010110118301;Quality Infantil;T-shirt;Preto;2 anos
+010110118302;Quality Infantil;T-shirt;Preto;4 anos
+010110118303;Quality Infantil;T-shirt;Preto;6 anos
+010110118304;Quality Infantil;T-shirt;Preto;8 anos
+010110118305;Quality Infantil;T-shirt;Preto;10 anos
+010110118306;Quality Infantil;T-shirt;Preto;12 anos
+010110118307;Quality Infantil;T-shirt;Preto;14 anos
+040102350108;Moletom Quality com Zíper;Unissex ;Branco;P
+040102350109;Moletom Quality com Zíper;Unissex ;Branco;M
+040102350110;Moletom Quality com Zíper;Unissex ;Branco;G
+040102350111;Moletom Quality com Zíper;Unissex ;Branco;GG
+040102358308;Moletom Quality com Zíper;Unissex ;Preto;P
+040102358309;Moletom Quality com Zíper;Unissex ;Preto;M
+040102358310;Moletom Quality com Zíper;Unissex ;Preto;G
+040102358311;Moletom Quality com Zíper;Unissex ;Preto;GG
+040102350208;Moletom Quality com Zíper;Unissex ;Cinza Mescla;P
+040102350209;Moletom Quality com Zíper;Unissex ;Cinza Mescla;M
+040102350210;Moletom Quality com Zíper;Unissex ;Cinza Mescla;G
+040102350211;Moletom Quality com Zíper;Unissex ;Cinza Mescla;GG
+040102360108;Moletom Quality Canguru;Unissex ;Branco;P
+040102360109;Moletom Quality Canguru;Unissex ;Branco;M
+040102360110;Moletom Quality Canguru;Unissex ;Branco;G
+040102360111;Moletom Quality Canguru;Unissex ;Branco;GG
+040102368308;Moletom Quality Canguru;Unissex ;Preto;P
+040102368309;Moletom Quality Canguru;Unissex ;Preto;M
+040102368310;Moletom Quality Canguru;Unissex ;Preto;G
+040102368311;Moletom Quality Canguru;Unissex ;Preto;GG
+040102360208;Moletom Quality Canguru;Unissex ;Cinza Mescla;P
+040102360209;Moletom Quality Canguru;Unissex ;Cinza Mescla;M
+040102360210;Moletom Quality Canguru;Unissex ;Cinza Mescla;G
+040102360211;Moletom Quality Canguru;Unissex ;Cinza Mescla;GG
+040102330108;Blusão;Unissex ;Branco;P
+040102330109;Blusão;Unissex ;Branco;M
+040102330110;Blusão;Unissex ;Branco;G
+040102330111;Blusão;Unissex ;Branco;GG
+040102338308;Blusão;Unissex ;Preto;P
+040102338309;Blusão;Unissex ;Preto;M
+040102338310;Blusão;Unissex ;Preto;G
+040102338311;Blusão;Unissex ;Preto;GG
+040102330208;Blusão;Unissex ;Cinza Mescla;P
+040102330209;Blusão;Unissex ;Cinza Mescla;M
+040102330210;Blusão;Unissex ;Cinza Mescla;G
+040102330211;Blusão;Unissex ;Cinza Mescla;GG
+010121110108;Dimona Prime;T-Shirt;Branco;P
+010121110109;Dimona Prime;T-Shirt;Branco;M
+010121110110;Dimona Prime;T-Shirt;Branco;G
+010121110111;Dimona Prime;T-Shirt;Branco;GG
+010121110112;Dimona Prime;T-Shirt;Branco;XGG
+010121118308;Dimona Prime;T-Shirt;Preto;P
+010121118309;Dimona Prime;T-Shirt;Preto;M
+010121118310;Dimona Prime;T-Shirt;Preto;G
+010121118311;Dimona Prime;T-Shirt;Preto;GG
+010121118312;Dimona Prime;T-Shirt;Preto;XGG
+11121110108;Dimona Prime;Baby Long;Branco;P
+11121110109;Dimona Prime;Baby Long;Branco;M
+11121110110;Dimona Prime;Baby Long;Branco;G
+11121110111;Dimona Prime;Baby Long;Branco;GG
+11121118308;Dimona Prime;Baby Long;Preto;P
+11121118309;Dimona Prime;Baby Long;Preto;M
+11121118310;Dimona Prime;Baby Long;Preto;G
+11121118311;Dimona Prime;Baby Long;Preto;GG
+body0101;Body Bebê;Body Bebê;Branco;P
+body0102;Body Bebê;Body Bebê;Branco;M
+body0103;Body Bebê;Body Bebê;Branco;G
+body0104;Body Bebê;Body Bebê;Branco;GG
+body0201;Body Bebê;Body Bebê;Preto;P
+body0202;Body Bebê;Body Bebê;Preto;M
+body0203;Body Bebê;Body Bebê;Preto;G
+body0204;Body Bebê;Body Bebê;Preto;GG
+010111119708;Estonada;T-Shirt;Cinza Chumbo;P
+010111119709;Estonada;T-Shirt;Cinza Chumbo;M
+010111119710;Estonada;T-Shirt;Cinza Chumbo;G
+010111119711;Estonada;T-Shirt;Cinza Chumbo;GG
+010111119712;Estonada;T-Shirt;Cinza Chumbo;XGG
+010111114808;Estonada;T-Shirt;Verde Bandeira;P
+010111114809;Estonada;T-Shirt;Verde Bandeira;M
+010111114810;Estonada;T-Shirt;Verde Bandeira;G
+010111114811;Estonada;T-Shirt;Verde Bandeira;GG
+010111114812;Estonada;T-Shirt;Verde Bandeira;XGG
+010111113608;Estonada;T-Shirt;Azul Royal;P
+010111113609;Estonada;T-Shirt;Azul Royal;M
+010111113610;Estonada;T-Shirt;Azul Royal;G
+010111113611;Estonada;T-Shirt;Azul Royal;GG
+010111113612;Estonada;T-Shirt;Azul Royal;XGG
+010111113708;Estonada;T-Shirt;Azul Marinho;P
+010111113709;Estonada;T-Shirt;Azul Marinho;M
+010111113710;Estonada;T-Shirt;Azul Marinho;G
+010111113711;Estonada;T-Shirt;Azul Marinho;GG
+010111113712;Estonada;T-Shirt;Azul Marinho;XGG
+010111112008;Estonada;T-Shirt;Vermelho;P
+010111112009;Estonada;T-Shirt;Vermelho;M
+010111112010;Estonada;T-Shirt;Vermelho;G
+010111112011;Estonada;T-Shirt;Vermelho;GG
+010111112012;Estonada;T-Shirt;Vermelho;XGG
+010111112708;Estonada;T-Shirt;Laranja;P
+010111112709;Estonada;T-Shirt;Laranja;M
+010111112710;Estonada;T-Shirt;Laranja;G
+010111112711;Estonada;T-Shirt;Laranja;GG
+010111112712;Estonada;T-Shirt;Laranja;XGG
+010111111508;Estonada;T-Shirt;Amarelo Canário;P
+010111111509;Estonada;T-Shirt;Amarelo Canário;M
+010111111510;Estonada;T-Shirt;Amarelo Canário;G
+010111111511;Estonada;T-Shirt;Amarelo Canário;GG
+010111111512;Estonada;T-Shirt;Amarelo Canário;XGG
+010525119708;Estonada;Baby Long;Cinza Chumbo;P
+010525119709;Estonada;Baby Long;Cinza Chumbo;M
+010525119710;Estonada;Baby Long;Cinza Chumbo;G
+010525119711;Estonada;Baby Long;Cinza Chumbo;GG
+010525112008;Estonada;Baby Long;Vermelho;P
+010525112009;Estonada;Baby Long;Vermelho;M
+010525112010;Estonada;Baby Long;Vermelho;G
+010525112011;Estonada;Baby Long;Vermelho;GG
+010525119508;Estonada;Baby Long;Rosa Pink;P
+010525119509;Estonada;Baby Long;Rosa Pink;M
+010525119510;Estonada;Baby Long;Rosa Pink;G
+010525119511;Estonada;Baby Long;Rosa Pink;GG
+PET011601;Pet;T-shirt;Amarelo Ouro;PP
+PET011602;Pet;T-shirt;Amarelo Ouro;P
+PET011603;Pet;T-shirt;Amarelo Ouro;M
+PET011604;Pet;T-shirt;Amarelo Ouro;G
+PET011605;Pet;T-shirt;Amarelo Ouro;GG
+PET019501;Pet;T-shirt;Rosa Pink;PP
+PET019502;Pet;T-shirt;Rosa Pink;P
+PET019503;Pet;T-shirt;Rosa Pink;M
+PET019504;Pet;T-shirt;Rosa Pink;G
+PET019505;Pet;T-shirt;Rosa Pink;GG
+PET018301;Pet;T-shirt;Preto;PP
+PET018302;Pet;T-shirt;Preto;P
+PET018303;Pet;T-shirt;Preto;M
+PET018304;Pet;T-shirt;Preto;G
+PET018305;Pet;T-shirt;Preto;GG
+8021300360;Avental de Brim;Avental;Azul Royal;Único
+8021300010;Avental de Brim;Avental;Branco;Único
+8021300830;Avental de Brim;Avental;Preto;Único
+8021300200;Avental de Brim;Avental;Vermelho;Único
+0300100101;Boné Quality Americano Tela;Boné;Branco;Único
+0300100183;Boné Quality Americano Tela;Boné;Preto;Único
+0300100137;Boné Quality Americano Tela;Boné;Azul Marinho;Único
+0300100120;Boné Quality Americano Tela;Boné;Vermelho;Único
+0300100195;Boné Quality Americano Tela;Boné;Rosa Pink;Único
+0300100201;Boné Quality Americano Inteiro;Boné;Branco;Único
+0300100283;Boné Quality Americano Inteiro;Boné;Preto;Único
+0300100237;Boné Quality Americano Inteiro;Boné;Azul Marinho;Único
+0300100220;Boné Quality Americano Inteiro;Boné;Vermelho;Único
+0300100295;Boné Quality Americano Inteiro;Boné;Rosa Pink;Único
+caneca;Caneca;Caneca;Branco;310ml
+11009;Caneca Mágica ;Caneca;Preto;310ml
+ecobagp;Ecobag;Ecobag;Cru;P
+ecobagm;Ecobag;Ecobag;Cru;M
+ecobagg;Ecobag;Ecobag;Cru;G
