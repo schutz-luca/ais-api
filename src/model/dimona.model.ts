@@ -36,6 +36,6 @@ export interface DimonaOrderAddress {
 }
 
 export interface FilesLinks {
-    designs: string[]
-    mocks: string[]
+    designs?: string[]
+    mocks?: string[]
 }
