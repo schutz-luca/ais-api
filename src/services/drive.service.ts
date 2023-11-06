@@ -3,10 +3,8 @@ import { DriveFile } from "../model/drive.model";
 
 const fs = require('fs').promises;
 const path = require('path');
-const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
 
-// If modifying these scopes, delete token.json.
 const SCOPES = [
     'https://www.googleapis.com/auth/docs',
     'https://www.googleapis.com/auth/drive',
@@ -16,59 +14,21 @@ const SCOPES = [
     'https://www.googleapis.com/auth/drive.scripts',
     'https://www.googleapis.com/auth/analytics'
 ];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
-const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
 
-/**
- * Reads previously authorized credentials from the save file.
- *
- * @return {Promise<OAuth2Client|null>}
- */
-async function loadSavedCredentialsIfExist() {
-    try {
-        const content = await fs.readFile(TOKEN_PATH);
-        const credentials = JSON.parse(content);
-        return google.auth.fromJSON(credentials);
-    } catch (err) {
-        return null;
-    }
-}
-
-/**
- * Serializes credentials to a file comptible with GoogleAUth.fromJSON.
- *
- * @param {OAuth2Client} client
- * @return {Promise<void>}
- */
-async function saveCredentials(client: any) {
-    const content = await fs.readFile(CREDENTIALS_PATH);
-    const keys = JSON.parse(content);
-    const key = keys.installed || keys.web;
-    const payload = JSON.stringify({
-        type: 'authorized_user',
-        client_id: key.client_id,
-        client_secret: key.client_secret,
-        refresh_token: client.credentials.refresh_token,
-    });
-    await fs.writeFile(TOKEN_PATH, payload);
-}
+// This file is the credentials export from Google Cloud service account
+const SERVICE_ACCOUNT_PATH = path.join(process.cwd(), 'google-service-account.json');
 
 async function authorize() {
-    let client = await loadSavedCredentialsIfExist();
-    if (client) {
-        return client;
-    }
-    client = await authenticate({
-        scopes: SCOPES,
-        keyfilePath: CREDENTIALS_PATH,
-    });
-    if (client.credentials) {
-        await saveCredentials(client);
-    }
-    return client;
+    const content = await fs.readFile(SERVICE_ACCOUNT_PATH);
+    const key = JSON.parse(content);
+
+    return new google.auth.JWT(
+        key.client_email,
+        null,
+        key.private_key,
+        SCOPES,
+        null
+    );
 }
 
 function handleImageLinks(fileName: string, file: DriveFile, fileLinks: FilesLinks) {
@@ -100,8 +60,13 @@ export async function getFilesIdByItem(sku: string, color: string | null | undef
     if (!color)
         return fileLinks
 
+    // Remove variant field from SKU
+    const handledSku = sku.split('-').slice(0, -1).join('-');
+    
     const res = await drive.files.list({
-        q: `name contains '${sku}' and name contains '${color}'`,
+        q: `name contains '${handledSku}' and name contains '${color}'`,
+        includeItemsFromAllDrives: true,
+        supportsAllDrives: true,
         fields: 'files(*)',
     });
     const files: any[] = res.data.files;
