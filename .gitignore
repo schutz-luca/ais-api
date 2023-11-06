@@ -3,8 +3,7 @@ prisma/query.ts
 src/examples
 
 # Drive auth
-token.json
-credentials.json
+google-service-account.json
 
 # Keep environment variables out of version control
 .env
