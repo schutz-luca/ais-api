@@ -1,5 +1,8 @@
 import csv from 'csvtojson';
 import { aisProducts } from "../model/products-correlation.model";
+import { DimonaOrderCreation } from '../model/dimona.model';
+import { ShopifyOrder } from '../model/shopify.model';
+import { getDimonaItems } from './shopify.service';
 
 /**
  * Correlates a Shopify product with its current Dimona product
@@ -42,6 +45,64 @@ export async function correlateProduct(gender: string | null, sku: string | null
     });
 
     return dimonaSkuId
+}
+/**
+ * Get formatted Dimona order from Shopify order
+ * @param shopifyOrder 
+ * @returns formatted Dimona order
+ */
+export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
+    const items = await getDimonaItems(shopifyOrder)
+
+    // Get address from Shopify order
+    const address = shopifyOrder.shipping_address.address1;
+
+    // Get address street and number from Shopify address
+    const street = address.split(',')[0]?.trim();
+    const number = address.split(',')[1]?.trim();
+
+    // Create Dimona order object
+    return {
+        order_id: `${shopifyOrder.id}`,
+        customer_name: [shopifyOrder.customer.first_name, shopifyOrder.customer.last_name].join(' '),
+        customer_email: shopifyOrder.customer.email,
+        customer_document: shopifyOrder.billing_address.company,
+
+        address: {
+            city: shopifyOrder.shipping_address.city,
+            zipcode: shopifyOrder.shipping_address.zip,
+            state: shopifyOrder.shipping_address.province,
+            neightborhood: shopifyOrder.shipping_address.address2,
+            street,
+            number
+        },
+        items
+    } as DimonaOrderCreation
+}
+
+/**
+ * It creates a order on Dimona API from a Shopify order
+ * @param shopifyOrder 
+ * @returns The response to Dimona's order creation request
+ */
+export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
+    const dimonaOrder = await formatDimonaOrder(shopifyOrder)
+
+    console.log('💙 Sending Dimona Order...', dimonaOrder);
+
+    const dimonaResult = await fetch(`${process.env.DIMONA_API_BASE}/order`, {
+        method: 'POST',
+        headers: {
+            'api-key': process.env.DIMONA_API_KEY || '',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dimonaOrder)
+    })
+
+    console.log(`💙 Dimona Order creation response: [${dimonaResult.status}] ${dimonaResult.statusText}`);
+
+    return await dimonaResult.json()
 }
 
 
