@@ -4,6 +4,8 @@ import { DimonaOrderCreation } from '../model/dimona.model';
 import { ShopifyOrder } from '../model/shopify.model';
 import { getDimonaItems } from './shopify.service';
 
+const path = require('path');
+
 /**
  * Correlates a Shopify product with its current Dimona product
  * @param gender 
@@ -30,8 +32,9 @@ export async function correlateProduct(gender: string | null, sku: string | null
     let dimonaSkuId = '';
 
     // Read CSV file to get current Dimona product
-    const csvFilePath = 'src/assets/dimona-products.csv';
-    (await csv().fromFile(csvFilePath)).forEach(row => {
+    const CSV_PATH = path.join(process.cwd(), '/src/assets/dimona-products.csv');
+    
+    (await csv().fromFile(CSV_PATH)).forEach(row => {
         const item = (Object.values(row)[0] as string).split(';');
 
         if (
