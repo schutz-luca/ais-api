@@ -16,7 +16,7 @@ const SCOPES = [
 ];
 
 // This file is the credentials export from Google Cloud service account
-const SERVICE_ACCOUNT_PATH = path.join(process.cwd(), 'google-service-account.json');
+const SERVICE_ACCOUNT_PATH = path.join(process.cwd(), '/src/ignore/google-service-account.json');
 
 async function authorize() {
     const content = await fs.readFile(SERVICE_ACCOUNT_PATH);
