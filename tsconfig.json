@@ -12,8 +12,9 @@
     "noImplicitAny": false
   },
   "include": [
-    "src/**/*"
-, "src/examples/order.example.ts"  ],
+    "src/**/*",
+    "src/ignore"
+  ],
   "exclude": [
     "node_modules"
   ]
