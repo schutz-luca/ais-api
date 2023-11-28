@@ -21,6 +21,6 @@ export async function orderPaidEndpoint(req: Request, res: Response) {
         console.log(error);
         res
             .status(error?.status || 500)
-            .send(error?.message)
+            .send(error)
     }
 }
