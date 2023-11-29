@@ -33,7 +33,7 @@ export async function correlateProduct(gender: string | null, sku: string | null
 
     // Read CSV file to get current Dimona product
     const CSV_PATH = path.join(process.cwd(), '/src/assets/dimona-products.csv');
-    
+
     (await csv().fromFile(CSV_PATH)).forEach(row => {
         const item = (Object.values(row)[0] as string).split(';');
 
@@ -63,6 +63,8 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
     // Get address street and number from Shopify address
     const street = address.split(',')[0]?.trim();
     const number = address.split(',')[1]?.trim();
+
+    console.log('Items>>>>>>>>', items)
 
     // Create Dimona order object
     return {

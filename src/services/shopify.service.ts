@@ -1,8 +1,8 @@
 import Shopify from 'shopify-api-node';
 import { ShopifyOrder } from "../model/shopify.model";
-import { getFilesIdByItem } from './drive.service';
+import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
-import { DimonaOrderItem, FilesLinks } from '../model/dimona.model';
+import { DimonaOrderItem } from '../model/dimona.model';
 
 function getShopifyClient() {
     return new Shopify({
@@ -11,18 +11,14 @@ function getShopifyClient() {
     });
 }
 
-async function handleShopifyMock(filesLinks: FilesLinks, shopifyClient: Shopify, productId: number, imageId: number | null) {
+async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId: number | null) {
     try {
         const mockImage = await shopifyClient.productImage.get(productId, imageId || 0)
-
-        if (mockImage?.src)
-            if (filesLinks.mocks)
-                filesLinks.mocks[0] = mockImage.src
-            else
-                filesLinks.mocks = [mockImage.src]
+        return [mockImage.src];
     }
     catch (error) {
         console.error('Error on handleShopifyMock: ', error)
+        return undefined
     }
 }
 
@@ -42,11 +38,8 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
     return await Promise.all(items.map(async (product) => {
         const variant = await shopifyClient.productVariant.get(product.variant_id);
 
-        // Get mock and design files using product SKU and variant COLOR
-        const filesLinks = await getFilesIdByItem(product.sku, variant?.option2);
-
-        // Get mock image from Shopify and overwrite it on filesLinks
-        await handleShopifyMock(filesLinks, shopifyClient, product.product_id, variant.image_id);
+        const designs = await getDesignInDrive(product.sku);
+        const mocks = await getShopifyMock(shopifyClient, product.product_id, variant.image_id);
 
         // Get Dimona product using variants data
         const dimonaSkuId = await correlateProduct(variant.option1, variant.sku, variant.option3, variant.option2)
@@ -56,7 +49,8 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
             dimona_sku_id: dimonaSkuId,
             name: product.name,
             qty: product.fulfillable_quantity,
-            ...filesLinks
+            designs,
+            mocks
         } as DimonaOrderItem
     }))
 }

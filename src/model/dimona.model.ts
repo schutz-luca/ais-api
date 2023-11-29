@@ -34,8 +34,3 @@ export interface DimonaOrderAddress {
     number: string;
     complement?: string;
 }
-
-export interface FilesLinks {
-    designs?: string[]
-    mocks?: string[]
-}

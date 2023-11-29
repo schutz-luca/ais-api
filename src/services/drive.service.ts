@@ -1,4 +1,3 @@
-import { FilesLinks } from "../model/dimona.model";
 import { DriveFile } from "../model/drive.model";
 
 const fs = require('fs').promises;
@@ -31,40 +30,29 @@ async function authorize() {
     );
 }
 
-function handleImageLinks(fileName: string, file: DriveFile, fileLinks: FilesLinks) {
+function handleDesignLinks(fileName: string, file: DriveFile, designs: string[]) {
     let fileWebLink = file.webContentLink;
 
-    if (!fileLinks.designs || !fileLinks.mocks)
-        return
-
     if (fileName.includes('df') || fileName.includes('design'))
-        fileLinks.designs[0] = fileWebLink
+        designs[0] = fileWebLink
     else if (fileName.includes('db'))
-        fileLinks.designs[1] = fileWebLink
-    else if (fileName.includes('mf') || fileName.includes('mock'))
-        fileLinks.mocks[0] = fileWebLink
-    else if (fileName.includes('mb'))
-        fileLinks.mocks[1] = fileWebLink
+        designs[1] = fileWebLink
 }
 
 
-export async function getFilesIdByItem(sku: string, color: string | null | undefined) {
+export async function getDesignInDrive(sku: string) {
     const authClient = await authorize();
     const authConfig = { version: 'v3', auth: authClient }
 
     const drive = google.drive(authConfig);
 
-    let fileLinks: FilesLinks = { designs: [], mocks: [] };
-
-    // If color is null, send empty images array to backoffice admin insert them manually
-    if (!color)
-        return fileLinks
+    let designs: string[] = [];
 
     // Remove variant field from SKU
     const handledSku = sku.split('-').slice(0, -1).join('-');
-    
+
     const res = await drive.files.list({
-        q: `name contains '${handledSku}' and name contains '${color}'`,
+        q: `name contains '${handledSku}'`,
         includeItemsFromAllDrives: true,
         supportsAllDrives: true,
         fields: 'files(*)',
@@ -83,13 +71,11 @@ export async function getFilesIdByItem(sku: string, color: string | null | undef
                 supportsAllDrives: true
             })
 
-        handleImageLinks(fileName, file, fileLinks)
-
+        handleDesignLinks(fileName, file, designs)
     }))
 
     // Delete images if they don't exist, forcing to add images manually
-    if (fileLinks.designs?.length === 0) delete fileLinks.designs
-    if (fileLinks.mocks?.length === 0) delete fileLinks.mocks
+    if (designs.length === 0) return undefined
 
-    return fileLinks
+    return designs
 }
