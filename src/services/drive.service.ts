@@ -63,13 +63,12 @@ export async function getDesignInDrive(sku: string) {
         const fileName = (file.name as string).toLowerCase();
 
         // Add anyone viewer permission 
-        if (!file.shared)
-            await drive.permissions.create({
-                fileId: file.id,
-                resource: { 'type': 'anyone', 'role': 'reader' },
-                sendNotificationEmail: false,
-                supportsAllDrives: true
-            })
+        await drive.permissions.create({
+            fileId: file.id,
+            resource: { 'type': 'anyone', 'role': 'reader' },
+            sendNotificationEmail: false,
+            supportsAllDrives: true
+        })
 
         handleDesignLinks(fileName, file, designs)
     }))
