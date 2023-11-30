@@ -6,7 +6,8 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "vercel-build": "echo hello"
+    "vercel-build": "echo hello",
+    "deploy": "vercel --prod"
   },
   "keywords": [],
   "author": "",
