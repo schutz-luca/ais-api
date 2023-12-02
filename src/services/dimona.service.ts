@@ -64,8 +64,6 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
     const street = address.split(',')[0]?.trim();
     const number = address.split(',')[1]?.trim();
 
-    console.log('Items>>>>>>>>', items)
-
     // Create Dimona order object
     return {
         order_id: `${shopifyOrder.id}`,
@@ -104,10 +102,11 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         },
         body: JSON.stringify(dimonaOrder)
     })
+    const response = await dimonaResult.json();
 
-    console.log(`💙 Dimona Order creation response: [${dimonaResult.status}] ${dimonaResult.statusText}`);
+    console.log(`💙 Dimona Order creation response: [${dimonaResult.status}] ${dimonaResult.statusText}\n`, response);
 
-    return await dimonaResult.json()
+    return response
 }
 
 

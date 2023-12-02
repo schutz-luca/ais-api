@@ -17,7 +17,7 @@ async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId
         return [mockImage.src];
     }
     catch (error) {
-        console.error('Error on handleShopifyMock: ', error)
+        console.log('Error on handleShopifyMock: ', error)
         return undefined
     }
 }
@@ -44,13 +44,21 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
         // Get Dimona product using variants data
         const dimonaSkuId = await correlateProduct(variant.option1, variant.sku, variant.option3, variant.option2)
 
-        return {
+        const item = {
             sku: variant.sku,
             dimona_sku_id: dimonaSkuId,
             name: product.name,
-            qty: product.fulfillable_quantity,
+            qty: product.quantity,
             designs,
             mocks
-        } as DimonaOrderItem
+        }
+        const reduceFilesArray = (prev, curr) => `\n${prev}${curr ? `\n${curr}` : ''}`
+
+        console.log(`📁 Item ${item.qty}x "${item.name}"(${item.sku}) found:`, {
+            mocks: item.mocks?.reduce(reduceFilesArray),
+            designs: item.designs?.reduce(reduceFilesArray),
+        })
+
+        return item as DimonaOrderItem
     }))
 }
