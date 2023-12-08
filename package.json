@@ -21,6 +21,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@vercel/postgres": "^0.5.1",
     "csv-parse": "^5.5.2",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.3.1",

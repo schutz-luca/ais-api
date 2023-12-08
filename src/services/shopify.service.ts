@@ -3,6 +3,8 @@ import { ShopifyOrder } from "../model/shopify.model";
 import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
 import { DimonaOrderItem } from '../model/dimona.model';
+import { log } from '../utils/log';
+import { LogsKind } from '../db/logs';
 
 function getShopifyClient() {
     return new Shopify({
@@ -17,7 +19,7 @@ async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId
         return [mockImage.src];
     }
     catch (error) {
-        console.log('Error on handleShopifyMock: ', error)
+        log(LogsKind.ERROR, 'Error on handleShopifyMock: ', error)
         return undefined
     }
 }
@@ -54,7 +56,7 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
         }
         const reduceFilesArray = (prev, curr) => `\n${prev}${curr ? `\n${curr}` : ''}`
 
-        console.log(`📁 Item ${item.qty}x "${item.name}"(${item.sku}) found:`, {
+        log(LogsKind.INFO, `📁 Item ${item.qty}x "${item.name}"(${item.sku}) found:`, {
             mocks: item.mocks?.reduce(reduceFilesArray),
             designs: item.designs?.reduce(reduceFilesArray),
         })

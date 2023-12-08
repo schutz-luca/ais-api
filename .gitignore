@@ -3,9 +3,11 @@ google-service-account.json
 
 # Keep environment variables out of version control
 .env
+.env.development.local
 
 # Others
 node_modules
 prisma/query.ts
 src/ignore
 dist
+.vercel

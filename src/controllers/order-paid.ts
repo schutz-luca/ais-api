@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { ShopifyOrder } from "../model/shopify.model";
 import { createDimonaOrder } from "../services/dimona.service";
+import { log } from "../utils/log";
+import { LogsKind } from "../db/logs";
 
 /**
  * This endpoint will:
@@ -18,7 +20,7 @@ export async function orderPaidEndpoint(req: Request, res: Response) {
         res.json(dimonaResult)
     }
     catch (error: any) {
-        console.log(error);
+        log(LogsKind.ERROR, 'Error on orderPaidEndpoint:', error);
         res
             .status(error?.status || 500)
             .send(error)

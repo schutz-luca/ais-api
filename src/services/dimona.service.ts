@@ -1,7 +1,9 @@
 import csv from 'csvtojson';
 import { aisProducts } from "../model/products-correlation.model";
+import { LogsKind } from '../db/logs';
 import { DimonaOrderCreation } from '../model/dimona.model';
 import { ShopifyOrder } from '../model/shopify.model';
+import { log } from '../utils/log';
 import { getDimonaItems } from './shopify.service';
 
 const path = require('path');
@@ -91,7 +93,7 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
 export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
     const dimonaOrder = await formatDimonaOrder(shopifyOrder)
 
-    console.log('💙 Sending Dimona Order...', dimonaOrder);
+    log(LogsKind.INFO, '💙 Sending Dimona Order...', dimonaOrder);
 
     const dimonaResult = await fetch(`${process.env.DIMONA_API_BASE}/order`, {
         method: 'POST',
@@ -104,7 +106,7 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
     })
     const response = await dimonaResult.json();
 
-    console.log(`💙 Dimona Order creation response: [${dimonaResult.status}] ${dimonaResult.statusText}\n`, response);
+    log(LogsKind.INFO, `💙 Dimona Order creation response: [${dimonaResult.status}] ${dimonaResult.statusText}\n`, response);
 
     return response
 }
