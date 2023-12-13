@@ -1,0 +1,1 @@
+export const reduceFilesArray = (prev, curr) => `\n${prev}${curr ? `\n${curr}` : ''}`

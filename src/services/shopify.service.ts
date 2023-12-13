@@ -15,7 +15,7 @@ function getShopifyClient() {
 
 async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId: number | null) {
     try {
-        const mockImage = await shopifyClient.productImage.get(productId, imageId || 0)
+        const mockImage = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' })
         return [mockImage.src];
     }
     catch (error) {
@@ -38,7 +38,7 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
         throw { status: 400, message: 'Bad Request: missing items field' }
 
     return await Promise.all(items.map(async (product) => {
-        const variant = await shopifyClient.productVariant.get(product.variant_id);
+        const variant = await shopifyClient.productVariant.get(product.variant_id, { fields: 'image_id,option1,sku,option3,option2' });
 
         const designs = await getDesignInDrive(product.sku);
         const mocks = await getShopifyMock(shopifyClient, product.product_id, variant.image_id);
@@ -54,12 +54,6 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
             designs,
             mocks
         }
-        const reduceFilesArray = (prev, curr) => `\n${prev}${curr ? `\n${curr}` : ''}`
-
-        log(LogsKind.INFO, `📁 Item ${item.qty}x "${item.name}"(${item.sku}) found:`, {
-            mocks: item.mocks?.reduce(reduceFilesArray),
-            designs: item.designs?.reduce(reduceFilesArray),
-        })
 
         return item as DimonaOrderItem
     }))

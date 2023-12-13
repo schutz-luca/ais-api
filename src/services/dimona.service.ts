@@ -4,6 +4,7 @@ import { LogsKind } from '../db/logs';
 import { DimonaOrderCreation } from '../model/dimona.model';
 import { ShopifyOrder } from '../model/shopify.model';
 import { log } from '../utils/log';
+import { reduceFilesArray } from '../utils/reduceFilesArray';
 import { getDimonaItems } from './shopify.service';
 
 const path = require('path');
@@ -91,10 +92,15 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
  * @returns The response to Dimona's order creation request
  */
 export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
+    // Preparing logs
+    const before = (new Date()).getTime();
+    log(LogsKind.INFO, 'Starting process...', {
+        order: shopifyOrder.id
+    })
+
     const dimonaOrder = await formatDimonaOrder(shopifyOrder)
 
-    log(LogsKind.INFO, '💙 Sending Dimona Order...', dimonaOrder);
-
+    // Send Dimona order creation request
     const dimonaResult = await fetch(`${process.env.DIMONA_API_BASE}/order`, {
         method: 'POST',
         headers: {
@@ -104,9 +110,25 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         },
         body: JSON.stringify(dimonaOrder)
     })
-    const response = await dimonaResult.json();
+    const response: any = await dimonaResult.json();
 
-    log(LogsKind.INFO, `💙 Dimona Order creation response: [${dimonaResult.status}] ${dimonaResult.statusText}\n`, response);
+    const duration = (((new Date()).getTime()) - before) / 1000;
+
+    // Create summary log
+    log(LogsKind.INFO, `Dimona Order Created`, {
+        order: dimonaOrder.order_id,
+        custumer: dimonaOrder.customer_name,
+        items: dimonaOrder.items.map(item => ({
+            ...item,
+            mocks: item.mocks.reduce(reduceFilesArray),
+            designs: item.designs.reduce(reduceFilesArray),
+        })),
+        dimonaResponse: {
+            text: `[${dimonaResult.status}] ${dimonaResult.statusText}\n`,
+            ...response
+        },
+        duration
+    });
 
     return response
 }

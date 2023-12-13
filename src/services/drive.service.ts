@@ -55,7 +55,7 @@ export async function getDesignInDrive(sku: string) {
         q: `name contains '${handledSku}'`,
         includeItemsFromAllDrives: true,
         supportsAllDrives: true,
-        fields: 'files(*)',
+        fields: 'files(id,webContentLink,name)',
     });
     const files: any[] = res.data.files;
 
