@@ -1,4 +1,5 @@
 import express from 'express'
+import { createDimonaOrders } from './controllers/create-dimona-orders';
 import { orderPaidEndpoint } from './controllers/order-paid';
 
 require('dotenv').config()
@@ -17,6 +18,9 @@ app.get('/', (_, res) => {
 
 // Endpoint triggered on Shopify order payment webhook
 app.post(`/order-paid`, orderPaidEndpoint)
+
+// Get all Shopify paid orders and create Dimona orders if it wasn't created yet
+app.get('/create-dimona-orders', createDimonaOrders)
 
 app.listen(port, () =>
   console.log(`🚀 Server ready at: http://localhost:${port}`),

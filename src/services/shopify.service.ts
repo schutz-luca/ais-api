@@ -37,7 +37,10 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
     if (!items)
         throw { status: 400, message: 'Bad Request: missing items field' }
 
-    return await Promise.all(items.map(async (product) => {
+    const dimonaItems = await Promise.all(items.map(async (product) => {
+        if (!product.variant_id)
+            return
+
         const variant = await shopifyClient.productVariant.get(product.variant_id, { fields: 'image_id,option1,sku,option3,option2' });
 
         const designs = await getDesignInDrive(product.sku);
@@ -57,4 +60,11 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
 
         return item as DimonaOrderItem
     }))
+    return dimonaItems.filter(item => item !== undefined)
+}
+
+export async function getPaidOrders() {
+    const shopifyClient = getShopifyClient();
+
+    return (await shopifyClient.order.list({ financial_status: 'paid' })) as unknown as ShopifyOrder[]
 }

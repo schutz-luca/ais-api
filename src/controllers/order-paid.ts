@@ -20,7 +20,7 @@ export async function orderPaidEndpoint(req: Request, res: Response) {
         res.json(dimonaResult)
     }
     catch (error: any) {
-        log(LogsKind.ERROR, 'Error on orderPaidEndpoint:', error);
+        await log(LogsKind.ERROR, 'Error on orderPaidEndpoint:', error);
         res
             .status(error?.status || 500)
             .send(error)

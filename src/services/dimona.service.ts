@@ -5,7 +5,8 @@ import { DimonaOrderCreation } from '../model/dimona.model';
 import { ShopifyOrder } from '../model/shopify.model';
 import { log } from '../utils/log';
 import { reduceFilesArray } from '../utils/reduceFilesArray';
-import { getDimonaItems } from './shopify.service';
+import { insertOrderPaid, listOrderPaid } from '../db/orders-paid';
+import { getDimonaItems, getPaidOrders } from './shopify.service';
 
 const path = require('path');
 
@@ -94,7 +95,7 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
 export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
     // Preparing logs
     const before = (new Date()).getTime();
-    log(LogsKind.INFO, 'Starting process...', {
+    await log(LogsKind.INFO, 'Starting process...', {
         order: shopifyOrder.id
     })
 
@@ -115,7 +116,7 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
     const duration = (((new Date()).getTime()) - before) / 1000;
 
     // Create summary log
-    log(LogsKind.INFO, `Dimona Order Created`, {
+    const summary = {
         order: dimonaOrder.order_id,
         custumer: dimonaOrder.customer_name,
         items: dimonaOrder.items.map(item => ({
@@ -124,15 +125,40 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
             designs: item.designs.reduce(reduceFilesArray),
         })),
         dimonaResponse: {
-            text: `[${dimonaResult.status}] ${dimonaResult.statusText}\n`,
+            status: dimonaResult.status,
+            text: dimonaResult.statusText,
             ...response
         },
         duration
-    });
+    }
+    await log(LogsKind.INFO, `Dimona Order Created`, summary);
 
-    return response
+    return summary
 }
 
+export async function createOrdersFromShopify() {
+    // Get paid orders from Shopify
+    const orders = await getPaidOrders();
 
+    // Get already processed orders
+    const existingOrders = await listOrderPaid();
 
+    const promises = orders.map(async (order) => {
+        // If the order has been already processed, return
+        if (existingOrders?.includes(`${order.id}`))
+            return
 
+        // Create Dimona order and get summary
+        const summary = await createDimonaOrder(order);
+
+        // If there was a 40* error, don't insert it to orders paid table in db
+        if (!`${summary.dimonaResponse.status}`.includes('40'))
+            await insertOrderPaid(order.id)
+
+        return summary
+    })
+    const summaries = (await Promise.all(promises)).filter(item => !!item);
+
+    await log(LogsKind.INFO, 'Create Dimona Orders from Shopify', summaries)
+    return summaries
+}
