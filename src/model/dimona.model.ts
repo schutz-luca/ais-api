@@ -29,7 +29,7 @@ export interface DimonaOrderAddress {
     zipcode: string;
     state: string;
     city: string;
-    neightborhood: string;
+    neighborhood: string;
     street: string;
     number: string;
     complement?: string;

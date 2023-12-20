@@ -79,7 +79,7 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
             city: shopifyOrder.shipping_address.city,
             zipcode: shopifyOrder.shipping_address.zip,
             state: shopifyOrder.shipping_address.province,
-            neightborhood: shopifyOrder.shipping_address.address2,
+            neighborhood: shopifyOrder.shipping_address.address2,
             street,
             number
         },
