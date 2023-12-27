@@ -7,6 +7,7 @@ import { log } from '../utils/log';
 import { reduceFilesArray } from '../utils/reduceFilesArray';
 import { insertOrderPaid, listOrderPaid } from '../db/orders-paid';
 import { getDimonaItems, getPaidOrders } from './shopify.service';
+import { handleAddressString } from '../utils/handleAddressString';
 
 const path = require('path');
 
@@ -65,8 +66,9 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
     const address = shopifyOrder.shipping_address.address1;
 
     // Get address street and number from Shopify address
-    const street = address.split(',')[0]?.trim();
-    const number = address.split(',')[1]?.trim();
+    const addressArray = address.split(' ');
+    const number = handleAddressString((addressArray.pop()) || '')
+    const street = handleAddressString(addressArray.join(' '))
 
     // Create Dimona order object
     return {
@@ -79,7 +81,8 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
             city: shopifyOrder.shipping_address.city,
             zipcode: shopifyOrder.shipping_address.zip,
             state: shopifyOrder.shipping_address.province,
-            neighborhood: shopifyOrder.shipping_address.address2,
+            neighborhood: shopifyOrder.shipping_address.company,
+            complement: shopifyOrder.shipping_address.address2,
             street,
             number
         },
@@ -117,13 +120,14 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
 
     // Create summary log
     const summary = {
-        order: dimonaOrder.order_id,
-        custumer: dimonaOrder.customer_name,
-        items: dimonaOrder.items.map(item => ({
-            ...item,
-            mocks: item.mocks.reduce(reduceFilesArray),
-            designs: item.designs.reduce(reduceFilesArray),
-        })),
+        dimonaOrder: {
+            ...dimonaOrder,
+            items: dimonaOrder.items.map(item => ({
+                ...item,
+                mocks: item.mocks.reduce(reduceFilesArray),
+                designs: item.designs.reduce(reduceFilesArray),
+            })),
+        },
         dimonaResponse: {
             status: dimonaResult.status,
             text: dimonaResult.statusText,
@@ -131,7 +135,6 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         },
         duration
     }
-    await log(LogsKind.INFO, `Dimona Order Created`, summary);
 
     return summary
 }
@@ -159,6 +162,6 @@ export async function createOrdersFromShopify() {
     })
     const summaries = (await Promise.all(promises)).filter(item => !!item);
 
-    await log(LogsKind.INFO, 'Create Dimona Orders from Shopify', summaries)
+    await log(LogsKind.INFO, 'create-dimona-orders', summaries)
     return summaries
 }

@@ -1,0 +1,1 @@
+export const handleAddressString = (address: string) => address.replace(/(,)/g, ' ').replace(/(-)/g, ' ').trim()

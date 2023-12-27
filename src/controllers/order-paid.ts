@@ -17,6 +17,7 @@ export async function orderPaidEndpoint(req: Request, res: Response) {
     try {
         const shopifyOrder: ShopifyOrder = req.body
         const dimonaResult = await createDimonaOrder(shopifyOrder);
+        await log(LogsKind.INFO, `order-paid`, dimonaResult);
         res.json(dimonaResult)
     }
     catch (error: any) {
