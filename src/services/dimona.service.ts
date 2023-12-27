@@ -120,14 +120,12 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
 
     // Create summary log
     const summary = {
-        dimonaOrder: {
-            ...dimonaOrder,
-            items: dimonaOrder.items.map(item => ({
-                ...item,
-                mocks: item.mocks.reduce(reduceFilesArray),
-                designs: item.designs.reduce(reduceFilesArray),
-            })),
-        },
+        ...dimonaOrder,
+        items: dimonaOrder.items.map(item => ({
+            ...item,
+            mocks: item.mocks.reduce(reduceFilesArray),
+            designs: item.designs.reduce(reduceFilesArray),
+        })),
         dimonaResponse: {
             status: dimonaResult.status,
             text: dimonaResult.statusText,
