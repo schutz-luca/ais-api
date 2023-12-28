@@ -63,7 +63,7 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
     const items = await getDimonaItems(shopifyOrder)
 
     // Get address from Shopify order
-    const address = shopifyOrder.shipping_address.address1;
+    const address = shopifyOrder.shipping_address.address1.trim();
 
     // Get address street and number from Shopify address
     const addressArray = address.split(' ');
