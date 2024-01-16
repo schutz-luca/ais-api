@@ -12,3 +12,7 @@ export const aisProducts = [
         product: 'Dimona Quality'
     }
 ]
+
+export const BLACK = 'Preto';
+export const WHITE = 'Branco';
+export const PRIME = 'Dimona Prime';

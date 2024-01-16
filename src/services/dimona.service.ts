@@ -1,5 +1,5 @@
 import csv from 'csvtojson';
-import { aisProducts } from "../model/products-correlation.model";
+import { BLACK, PRIME, WHITE, aisProducts } from "../model/products-correlation.model";
 import { LogsKind } from '../db/logs';
 import { DimonaOrderCreation } from '../model/dimona.model';
 import { ShopifyOrder } from '../model/shopify.model';
@@ -30,6 +30,14 @@ export async function correlateProduct(gender: string | null, sku: string | null
     // Use shopify variants data to get current AIS product
     const product = aisProducts.find(product => product.gender === genderChar && product.model === modelInitials);
 
+    // Use PRIME product when color is black or white
+    let dimonaProduct;
+
+    if (product && (color === BLACK || color === WHITE))
+        dimonaProduct = PRIME;
+    else
+        dimonaProduct = product?.product
+
     // The shopify variant has no AIS product correlated
     if (!product)
         return null
@@ -43,13 +51,12 @@ export async function correlateProduct(gender: string | null, sku: string | null
         const item = (Object.values(row)[0] as string).split(';');
 
         if (
-            item[1] === product.product &&
+            item[1] === dimonaProduct &&
             item[2] === product.style &&
             item[3] === color &&
             item[4] === size
         )
             dimonaSkuId = item[0]
-
     });
 
     return dimonaSkuId
