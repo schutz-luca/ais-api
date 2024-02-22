@@ -10,6 +10,12 @@ export const aisProducts = [
         gender: 'f',
         style: 'Baby Long',
         product: 'Dimona Quality'
+    },
+    {
+        model: 'c',
+        gender: 'p',
+        style: 'T-Shirt',
+        product: 'Dimona Quality'
     }
 ]
 

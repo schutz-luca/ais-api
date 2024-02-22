@@ -33,7 +33,8 @@ export async function correlateProduct(gender: string | null, sku: string | null
     // Use PRIME product when color is black or white
     let dimonaProduct;
 
-    if (product && (color === BLACK || color === WHITE))
+    // If product is black or white and it's not Pluse Size, makes it Prime
+    if (product && (color === BLACK || color === WHITE) && product.gender !== 'p')
         dimonaProduct = PRIME;
     else
         dimonaProduct = product?.product
@@ -130,8 +131,8 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         ...dimonaOrder,
         items: dimonaOrder.items.map(item => ({
             ...item,
-            mocks: item.mocks.reduce(reduceFilesArray),
-            designs: item.designs.reduce(reduceFilesArray),
+            mocks: item.mocks?.reduce(reduceFilesArray),
+            designs: item.designs?.reduce(reduceFilesArray),
         })),
         dimonaResponse: {
             status: dimonaResult.status,
