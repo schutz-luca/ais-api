@@ -50,8 +50,8 @@ export async function getDesignInDrive(sku: string) {
 
     const handledSku = sku.split('-')
         // Get only the gender and model sku's part
-        .slice(1, -1)
-        // If it has a 'P' gender, replace it to 'M' to find the design into drive files
+        .slice(0, -1)
+        // If it has a 'P' (Plus Size) gender, replace it to 'M' to find the design into drive files
         .join('-').replace('P-', 'M-');
 
 
