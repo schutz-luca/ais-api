@@ -5,28 +5,30 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "vercel-build": "echo hello",
-    "deploy": "vercel --prod"
+    "watch": "tsc -w",
+    "clean": "rimraf dist",
+    "prestart": "npm run clean && npm run build",
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
+    "@types/node": "^18.x",
+    "typescript": "^4.0.0",
+    "rimraf": "^5.0.0",
     "@types/csvtojson": "^2.0.0",
     "@types/express": "^4.17.19",
-    "@types/node": "^20.8.6",
     "nodemon": "^3.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "@vercel/postgres": "^0.5.1",
+    "@azure/functions": "^4.0.0",
     "csv-parse": "^5.5.2",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "googleapis": "^105.0.0",
-    "shopify-api-node": "^3.12.7"
-  }
+    "shopify-api-node": "^3.12.7",
+    "@vercel/postgres": "^0.5.1"
+  },
+  "main": "dist/src/functions/*.js"
 }
