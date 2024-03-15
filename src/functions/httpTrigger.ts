@@ -6,7 +6,7 @@ export async function handlerCreateAll(_, context: InvocationContext): Promise<H
     const prefix = '[CREATE-ALL]';
     context.log(`${prefix} Starting creating all unprocessed orders from Shopify`);
     const summaries = await createOrdersFromShopify();
-    context.log(`${prefix} Order processed`);
+    context.log(`${prefix} Runned and created ${summaries.length} orders`, summaries);
     return { jsonBody: summaries };
 }
 
@@ -15,7 +15,7 @@ export async function handlerOrderPaid(request: HttpRequest, context: Invocation
     const shopifyOrder = (await request.json()) as ShopifyOrder;
     context.log(`${prefix} Starting process order ${shopifyOrder.id}`);
     const dimonaResult = await createDimonaOrder(shopifyOrder);
-    context.log(`${prefix} Order processed`);
+    context.log(`${prefix} Order processed`, dimonaResult);
     return { jsonBody: dimonaResult };
 }
 

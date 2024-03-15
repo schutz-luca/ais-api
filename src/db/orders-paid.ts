@@ -2,7 +2,9 @@ import { sql } from "@vercel/postgres";
 
 export async function insertOrderPaid(orderId) {
     try {
-        await sql`INSERT INTO ordersPaid VALUES (${orderId});`;
+        const now = (new Date()).toISOString().split('.')[0];
+
+        await sql`INSERT INTO ordersPaid VALUES (${orderId},${now});`;
     }
     catch (error) {
         console.error('Error on insert orderPaid:', error)
