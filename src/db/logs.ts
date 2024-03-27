@@ -16,6 +16,8 @@ export async function insertLog(kind: LogsKind, message: string, body: any) {
             ${body},
             ${message}
         );`;
+
+        console.log(`[${now}] ${message}`, body);
     }
     catch (error) {
         console.error('Error on insert log:', error)

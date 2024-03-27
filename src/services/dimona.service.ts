@@ -1,6 +1,6 @@
 import csv from 'csvtojson';
 import { BLACK, PRIME, WHITE, aisProducts } from "../model/products-correlation.model";
-import { LogsKind } from '../db/logs';
+import { LogsKind, insertLog } from '../db/logs';
 import { DimonaOrderCreation } from '../model/dimona.model';
 import { ShopifyOrder } from '../model/shopify.model';
 import { log } from '../utils/log';
@@ -104,45 +104,50 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
  * @returns The response to Dimona's order creation request
  */
 export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
-    // Preparing logs
-    const before = (new Date()).getTime();
-    await log(LogsKind.INFO, 'Starting process...', {
-        order: shopifyOrder.id
-    })
+    try {
+        // Preparing logs
+        const before = (new Date()).getTime();
+        await log(LogsKind.INFO, 'Starting process...', {
+            order: shopifyOrder.id
+        })
 
-    const dimonaOrder = await formatDimonaOrder(shopifyOrder)
+        const dimonaOrder = await formatDimonaOrder(shopifyOrder)
 
-    // Send Dimona order creation request
-    const dimonaResult = await fetch(`${process.env.DIMONA_API_BASE}/order`, {
-        method: 'POST',
-        headers: {
-            'api-key': process.env.DIMONA_API_KEY || '',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dimonaOrder)
-    })
-    const response: any = await dimonaResult.json();
+        // Send Dimona order creation request
+        const dimonaResult = await fetch(`${process.env.DIMONA_API_BASE}/order`, {
+            method: 'POST',
+            headers: {
+                'api-key': process.env.DIMONA_API_KEY || '',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dimonaOrder)
+        })
+        const response: any = await dimonaResult.json();
 
-    const duration = (((new Date()).getTime()) - before) / 1000;
+        const duration = (((new Date()).getTime()) - before) / 1000;
 
-    // Create summary log
-    const summary = {
-        ...dimonaOrder,
-        items: dimonaOrder.items.map(item => ({
-            ...item,
-            mocks: item.mocks?.reduce(reduceFilesArray),
-            designs: item.designs?.reduce(reduceFilesArray),
-        })),
-        dimonaResponse: {
-            status: dimonaResult.status,
-            text: dimonaResult.statusText,
-            ...response
-        },
-        duration
+        // Create summary log
+        const summary = {
+            ...dimonaOrder,
+            items: dimonaOrder.items.map(item => ({
+                ...item,
+                mocks: item.mocks?.reduce(reduceFilesArray),
+                designs: item.designs?.reduce(reduceFilesArray),
+            })),
+            dimonaResponse: {
+                status: dimonaResult.status,
+                text: dimonaResult.statusText,
+                ...response
+            },
+            duration
+        }
+
+        return summary
     }
-
-    return summary
+    catch (error) {
+        await insertLog(LogsKind.INFO, 'Error on createDimonaOrder', error);        
+    }
 }
 
 export async function createOrdersFromShopify() {
