@@ -7,7 +7,7 @@ import { log } from '../utils/log';
 import { reduceFilesArray } from '../utils/reduceFilesArray';
 import { insertOrderPaid, listOrderPaid } from '../db/orders-paid';
 import { getDimonaItems, getPaidOrders } from './shopify.service';
-import { handleAddressString } from '../utils/handleAddressString';
+import { getStreetAndNumber } from '../utils/getStreetAndNumber';
 
 const path = require('path');
 
@@ -74,9 +74,7 @@ export async function formatDimonaOrder(shopifyOrder: ShopifyOrder) {
     const address = shopifyOrder.shipping_address.address1.trim();
 
     // Get address street and number from Shopify address
-    const addressArray = address.split(' ');
-    const number = handleAddressString((addressArray.pop()) || '')
-    const street = handleAddressString(addressArray.join(' '))
+    const { number, street } = getStreetAndNumber(address)
 
     // Create Dimona order object
     return {
@@ -146,7 +144,7 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         return summary
     }
     catch (error) {
-        await insertLog(LogsKind.INFO, 'Error on createDimonaOrder', error);        
+        await insertLog(LogsKind.INFO, 'Error on createDimonaOrder', error);
     }
 }
 
@@ -165,8 +163,8 @@ export async function createOrdersFromShopify() {
         // Create Dimona order and get summary
         const summary = await createDimonaOrder(order);
 
-        // If there was a 40* error, don't insert it to orders paid table in db
-        if (!`${summary.dimonaResponse.status}`.includes('40'))
+        // If there was an error, don't insert it to orders paid table in db
+        if (!(`${summary.dimonaResponse.status}`[0] === '4'))
             await insertOrderPaid(order.id)
 
         return summary
