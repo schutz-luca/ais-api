@@ -163,11 +163,13 @@ export async function createOrdersFromShopify() {
 
         // Create Dimona order and get summary
         const summary = await createDimonaOrder(order);
-        const nfeStatus = await generateNFE(order);
 
+        let nfeStatus = 'empty';
         // If there was an error, don't insert it to orders paid table in db
-        if (!(`${summary.dimonaResponse.status}`[0] === '4'))
+        if (!(`${summary.dimonaResponse.status}`[0] === '4')) {
             await insertOrderPaid(order.id)
+            nfeStatus = await generateNFE(order);
+        }
 
         return { ...summary, nfeSuccess: nfeStatus }
     })
