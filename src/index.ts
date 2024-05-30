@@ -1,6 +1,7 @@
 import express from 'express'
 import { createDimonaOrders } from './controllers/create-dimona-orders';
 import { orderPaidEndpoint } from './controllers/order-paid';
+import { getShopifyOrder } from './services/shopify.service';
 
 require('dotenv').config()
 
@@ -21,6 +22,8 @@ app.post(`/order-paid`, orderPaidEndpoint)
 
 // Get all Shopify paid orders and create Dimona orders if it wasn't created yet
 app.get('/create-dimona-orders', createDimonaOrders)
+
+app.get('/shopify-order', getShopifyOrder)
 
 app.listen(port, () =>
   console.log(`🚀 Server ready at: http://localhost:${port}`),

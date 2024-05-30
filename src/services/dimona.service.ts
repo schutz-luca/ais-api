@@ -8,6 +8,7 @@ import { reduceFilesArray } from '../utils/reduceFilesArray';
 import { insertOrderPaid, listOrderPaid } from '../db/orders-paid';
 import { getDimonaItems, getPaidOrders } from './shopify.service';
 import { getStreetAndNumber } from '../utils/getStreetAndNumber';
+import { generateNFE } from './bling.service';
 
 const path = require('path');
 
@@ -162,12 +163,13 @@ export async function createOrdersFromShopify() {
 
         // Create Dimona order and get summary
         const summary = await createDimonaOrder(order);
+        const nfeStatus = await generateNFE(order);
 
         // If there was an error, don't insert it to orders paid table in db
         if (!(`${summary.dimonaResponse.status}`[0] === '4'))
             await insertOrderPaid(order.id)
 
-        return summary
+        return { ...summary, nfeSuccess: nfeStatus }
     })
     const summaries = (await Promise.all(promises)).filter(item => !!item);
 

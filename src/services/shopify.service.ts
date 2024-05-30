@@ -13,6 +13,38 @@ function getShopifyClient() {
     });
 }
 
+export async function getCustomerCpf(graphqlId: string) {
+    const shopifyClient = getShopifyClient();
+
+    const result = await shopifyClient.graphql(`
+    {
+        order(id: "${graphqlId}") {
+          id
+          localizationExtensions(first: 5) {
+            edges {
+              node {
+                countryCode
+                purpose
+                title
+                value
+              }
+            }
+          }
+        }
+      }`);
+
+    return result.order.localizationExtensions.edges[0].node.value as string;
+}
+
+export async function getShopifyOrder(req, res) {
+    const shopifyClient = getShopifyClient();
+    const id = req.query.id;
+
+    const order = await shopifyClient.order.get(id) as unknown as ShopifyOrder;
+
+    res.json(order);
+}
+
 async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId: number | null) {
     try {
         const mockImage = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' })
