@@ -1,3 +1,4 @@
+import { getTokens, updateTokens } from "../db/blingtokens";
 import { addNfNumber, checkExists, getLastNf } from "../db/nf";
 import { NFE } from "../model/bling.model"
 import { ShopifyOrder } from "../model/shopify.model"
@@ -12,12 +13,37 @@ function getDate() {
         .join(' ');
 }
 
-async function postNFE(nfe: NFE): Promise<any> {
+async function refreshToken() {
+    try {
+        const tokens = await getTokens();
+        const body = {
+            grant_type: "refresh_token",
+            refresh_token: tokens.refresh
+        }
+        const result: any = await (await fetch(`${process.env.BLING_API_BASE}/oauth/token`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${process.env.BLING_TOKEN}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })).json()
+
+        await updateTokens(result.access_token, result.refresh_token);
+        console.log('Token refreshed');
+    }
+    catch (error) {
+        console.error('Error on refreshToken:', error);
+    }
+}
+
+async function postNFE(nfe: NFE, access: string): Promise<any> {
     try {
         return (await fetch(`${process.env.BLING_API_BASE}/nfe`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.BLING_TOKEN}`,
+                'Authorization': `Bearer ${access}`,
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
@@ -29,11 +55,11 @@ async function postNFE(nfe: NFE): Promise<any> {
     }
 }
 
-async function sendNFE(nfeId: string): Promise<any> {
+async function sendNFE(nfeId: string, access: string): Promise<any> {
     return (await fetch(`${process.env.BLING_API_BASE}/nfe/${nfeId}/enviar`, {
         method: 'POST',
         headers: {
-            'Authorization': `Bearer ${process.env.BLING_TOKEN}`,
+            'Authorization': `Bearer ${access}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
@@ -107,13 +133,20 @@ export async function generateNFE(shopifyOrder: ShopifyOrder) {
 
         const customerCpf = await getCustomerCpf(shopifyOrder.admin_graphql_api_id);
         const formattedNFE = await formatNFE(shopifyOrder, customerCpf);
+        const tokens = await getTokens();
 
-        const postResult = await postNFE(formattedNFE);
+        const postResult = await postNFE(formattedNFE, tokens.access);
 
-        if (!postResult.data?.id)
-            return 'Erro ao criar NFE'
+        if (postResult.error) {
+            if (postResult.error.type === 'invalid_token') {
+                await refreshToken();
+                return generateNFE(shopifyOrder);
+            }
 
-        const sendResult = await sendNFE(postResult.data.id)
+            return `${postResult.error.message}: ${postResult.error.description} /// ${postResult.error.fields && `${postResult.error.fields.map(item => item?.msg)}`}`
+        }
+
+        const sendResult = await sendNFE(postResult.data.id, tokens.access)
 
         const xml = sendResult.data.xml as string;
 
