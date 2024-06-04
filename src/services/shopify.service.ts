@@ -2,7 +2,7 @@ import Shopify from 'shopify-api-node';
 import { ShopifyOrder } from "../model/shopify.model";
 import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
-import { DimonaOrderItem } from '../model/dimona.model';
+import { DimonaOrderItem } from '../dto/dimona.dto';
 import { log } from '../utils/log';
 import { LogsKind } from '../db/logs';
 

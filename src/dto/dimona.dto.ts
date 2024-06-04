@@ -1,3 +1,10 @@
+export interface DimonaSendNFe {
+    chave: string,
+    serie: string,
+    numero: string,
+    link: string,
+}
+
 export interface DimonaOrderCreation {
     order_id: string;
 

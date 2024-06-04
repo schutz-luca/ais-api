@@ -1,4 +1,4 @@
-export interface NFE {
+export interface NFe {
     tipo: number
     numero: string
     dataOperacao: string
