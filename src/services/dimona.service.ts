@@ -1,16 +1,41 @@
 import csv from 'csvtojson';
 import { BLACK, PRIME, WHITE, aisProducts } from "../model/products-correlation.model";
 import { LogsKind, insertLog } from '../db/logs';
-import { DimonaOrderCreation } from '../model/dimona.model';
+import { DimonaOrderCreation, DimonaSendNFe } from '../dto/dimona.dto';
 import { ShopifyOrder } from '../model/shopify.model';
 import { log } from '../utils/log';
 import { reduceFilesArray } from '../utils/reduceFilesArray';
 import { insertOrderPaid, listOrderPaid } from '../db/orders-paid';
 import { getDimonaItems, getPaidOrders } from './shopify.service';
 import { getStreetAndNumber } from '../utils/getStreetAndNumber';
-import { generateNFE } from './bling.service';
+import { generateNFe } from './bling.service';
 
 const path = require('path');
+
+const dimonaApi = {
+    createOrder: async (dimonaOrder: DimonaOrderCreation) => {
+        return (await fetch(`${process.env.DIMONA_API_BASE}/order`, {
+            method: 'POST',
+            headers: {
+                'api-key': process.env.DIMONA_API_KEY || '',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dimonaOrder)
+        })).json()
+    },
+    sendNFe: async (nfe: DimonaSendNFe, orderId: string) => {
+        return (await fetch(`${process.env.DIMONA_API_BASE}/order/${orderId}/nfe`, {
+            method: 'POST',
+            headers: {
+                'api-key': process.env.DIMONA_API_KEY || '',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(nfe)
+        })).json()
+    }
+}
 
 /**
  * Correlates a Shopify product with its current Dimona product
@@ -113,16 +138,7 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         const dimonaOrder = await formatDimonaOrder(shopifyOrder)
 
         // Send Dimona order creation request
-        const dimonaResult = await fetch(`${process.env.DIMONA_API_BASE}/order`, {
-            method: 'POST',
-            headers: {
-                'api-key': process.env.DIMONA_API_KEY || '',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dimonaOrder)
-        })
-        const response: any = await dimonaResult.json();
+        const dimonaResult: any = await dimonaApi.createOrder(dimonaOrder);
 
         const duration = (((new Date()).getTime()) - before) / 1000;
 
@@ -134,11 +150,7 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
                 mocks: item.mocks?.reduce(reduceFilesArray),
                 designs: item.designs?.reduce(reduceFilesArray),
             })),
-            dimonaResponse: {
-                status: dimonaResult.status,
-                text: dimonaResult.statusText,
-                ...response
-            },
+            dimonaResponse: dimonaResult,
             duration
         }
 
@@ -165,13 +177,30 @@ export async function createOrdersFromShopify() {
         const summary = await createDimonaOrder(order);
 
         let nfeStatus = 'empty';
-        // If there was an error, don't insert it to orders paid table in db
+
+        // When Dimona order creation has success
         if (!(`${summary.dimonaResponse.status}`[0] === '4')) {
+            // Insert its id to Order Paid table
             await insertOrderPaid(order.id)
-            nfeStatus = await generateNFE(order);
+
+            // Generate NFe on Bling
+            const { status, success, nfe } = await generateNFe(order);
+
+            nfeStatus = status;
+            const orderId = summary.dimonaResponse.order;
+
+            // If the NFe was succefully generated, send it to Dimona
+            if (orderId && nfe && success) {
+                try {
+                    await dimonaApi.sendNFe(nfe, orderId);
+                }
+                catch (error) {
+                    nfeStatus += ` /// Não foi possível enviar NFe para Dimona: ${error.message || error}`
+                }
+            }
         }
 
-        return { ...summary, nfeSuccess: nfeStatus }
+        return { ...summary, nfeStatus }
     })
     const summaries = (await Promise.all(promises)).filter(item => !!item);
 
