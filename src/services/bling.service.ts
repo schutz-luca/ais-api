@@ -1,9 +1,74 @@
 import { getTokens, updateTokens } from "../db/blingtokens";
 import { addNfNumber, checkExists, getLastNf } from "../db/nf";
-import { NFE } from "../model/bling.model"
+import { DimonaSendNFe } from "../dto/dimona.dto";
+import { NFe } from "../model/bling.model"
 import { ShopifyOrder } from "../model/shopify.model"
 import { getStreetAndNumber } from "../utils/getStreetAndNumber"
 import { getCustomerCpf } from './shopify.service';
+
+
+const blingApi = {
+    refreshToken: async () => {
+        try {
+            const tokens = await getTokens();
+            const body = {
+                grant_type: "refresh_token",
+                refresh_token: tokens.refresh
+            }
+            const result: any = await (await fetch(`${process.env.BLING_API_BASE}/oauth/token`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Basic ${process.env.BLING_TOKEN}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })).json()
+
+            await updateTokens(result.access_token, result.refresh_token);
+            console.log('Token refreshed');
+        }
+        catch (error) {
+            console.error('Error on refreshToken:', error);
+        }
+    },
+    postNFe: async (nfe: NFe, access: string): Promise<any> => {
+        try {
+            return (await fetch(`${process.env.BLING_API_BASE}/nfe`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${access}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nfe)
+            })).json()
+        }
+        catch (error) {
+            console.error('Error on postNFe:', error);
+        }
+    },
+    sendNFe: async (nfeId: string, access: string): Promise<any> => {
+        return (await fetch(`${process.env.BLING_API_BASE}/nfe/${nfeId}/enviar`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })).json()
+    },
+    getNFe: async (nfeId: string, access: string): Promise<any> => {
+        return (await fetch(`${process.env.BLING_API_BASE}/nfe/${nfeId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${access}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })).json()
+    }
+}
 
 function getDate() {
     return new Date()
@@ -13,60 +78,7 @@ function getDate() {
         .join(' ');
 }
 
-async function refreshToken() {
-    try {
-        const tokens = await getTokens();
-        const body = {
-            grant_type: "refresh_token",
-            refresh_token: tokens.refresh
-        }
-        const result: any = await (await fetch(`${process.env.BLING_API_BASE}/oauth/token`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Basic ${process.env.BLING_TOKEN}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })).json()
-
-        await updateTokens(result.access_token, result.refresh_token);
-        console.log('Token refreshed');
-    }
-    catch (error) {
-        console.error('Error on refreshToken:', error);
-    }
-}
-
-async function postNFE(nfe: NFE, access: string): Promise<any> {
-    try {
-        return (await fetch(`${process.env.BLING_API_BASE}/nfe`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${access}`,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(nfe)
-        })).json()
-    }
-    catch (error) {
-        console.error('Error on postNFE:', error);
-    }
-}
-
-async function sendNFE(nfeId: string, access: string): Promise<any> {
-    return (await fetch(`${process.env.BLING_API_BASE}/nfe/${nfeId}/enviar`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${access}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-    })).json()
-}
-
-async function formatNFE(shopifyOrder: ShopifyOrder, customerCpf: string) {
+async function formatNFe(shopifyOrder: ShopifyOrder, customerCpf: string) {
     const { street, number } = getStreetAndNumber(shopifyOrder.shipping_address.address1)
 
     const nfeFixedFields = {
@@ -77,7 +89,7 @@ async function formatNFE(shopifyOrder: ShopifyOrder, customerCpf: string) {
     // Last NF stored into db
     const lastNf = await getLastNf();
 
-    const nfe: NFE = {
+    const nfe: NFe = {
         tipo: 1,
         numero: `${lastNf.number + 1}`,
         dataOperacao: getDate(),
@@ -125,37 +137,79 @@ async function formatNFE(shopifyOrder: ShopifyOrder, customerCpf: string) {
 }
 
 
-export async function generateNFE(shopifyOrder: ShopifyOrder) {
+export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean): Promise<{
+    success: boolean,
+    status: string,
+    nfe?: DimonaSendNFe
+}> {
     try {
+        // Check if the order has an existing NFe on DB
         const nfeExists = await checkExists(shopifyOrder.id);
         if (nfeExists)
-            return `NFE do pedido ${shopifyOrder.id} já existe`
-
-        const customerCpf = await getCustomerCpf(shopifyOrder.admin_graphql_api_id);
-        const formattedNFE = await formatNFE(shopifyOrder, customerCpf);
-        const tokens = await getTokens();
-
-        const postResult = await postNFE(formattedNFE, tokens.access);
-
-        if (postResult.error) {
-            if (postResult.error.type === 'invalid_token') {
-                await refreshToken();
-                return generateNFE(shopifyOrder);
+            return {
+                status: `NFe do pedido ${shopifyOrder.id} já existe`,
+                success: false
             }
 
-            return `${postResult.error.message}: ${postResult.error.description} /// ${postResult.error.fields && `${postResult.error.fields.map(item => item?.msg)}`}`
+        // Get required data to format NFe in Bling pattern
+        const customerCpf = await getCustomerCpf(shopifyOrder.admin_graphql_api_id);
+        const formattedNFe = await formatNFe(shopifyOrder, customerCpf);
+
+        // Get access and refresh token from DB
+        const tokens = await getTokens();
+
+        const postResult = await blingApi.postNFe(formattedNFe, tokens.access);
+
+        if (postResult.error) {
+            // When error is about token, refresh it and try again
+            if (postResult.error.type === 'invalid_token') {
+                await blingApi.refreshToken();
+
+                // Use `isRetry` flag to avoid looping execution
+                if (!isRetry)
+                    return generateNFe(shopifyOrder, true);
+            }
+
+            return {
+                success: false,
+                status: `${postResult.error.message}: ${postResult.error.description} /// ${postResult.error.fields && `${postResult.error.fields.map(item => item?.msg)}`}`,
+            }
         }
 
-        const sendResult = await sendNFE(postResult.data.id, tokens.access)
+        const nfeId = postResult.data.id;
 
+        // Send NFe to gov system through Bling
+        const sendResult = await blingApi.sendNFe(nfeId, tokens.access);
+
+        // Check if it was sent succefully
         const xml = sendResult.data.xml as string;
-
+        const sentNfe = xml.includes('Autorizado o uso da NF-e') ? 'NFe enviada' : `NFe não pode ser enviada... >>> ${xml}`;
+        
+        // Add NFe to DB
         await addNfNumber(`${shopifyOrder.id}`);
-        return xml.includes('Autorizado o uso da NF-e') && 'NFE enviada';
+
+        // Get NFe to extract required data to Dimona
+        const getResult = await blingApi.getNFe(nfeId, tokens.access);
+
+        const dimonaAddNFe = {
+            chave: getResult.data.chaveAcesso,
+            serie: getResult.data.serie,
+            numero: getResult.data.numero,
+            link: getResult.data.linkPDF,
+        }
+
+        return {
+            success: true,
+            status: sentNfe,
+            nfe: dimonaAddNFe
+        }
     }
     catch (error) {
-        console.error('Error on generateNFE:', error)
-        return error
+        console.error('Error on generateNFe:', error)
+        return {
+            success: false,
+            status: error?.message || `${error}`
+        }
     }
 
 }
