@@ -208,7 +208,7 @@ export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean)
         console.error('Error on generateNFe:', error)
         return {
             success: false,
-            status: error?.message || `${error}`
+            status: `Error on generateNFe: ${error?.message || `${error}`}`
         }
     }
 
