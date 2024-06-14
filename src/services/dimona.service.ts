@@ -12,7 +12,7 @@ import { generateNFe } from './bling.service';
 
 const path = require('path');
 
-const dimonaApi = {
+export const dimonaApi = {
     createOrder: async (dimonaOrder: DimonaOrderCreation) => {
         return (await fetch(`${process.env.DIMONA_API_BASE}/order`, {
             method: 'POST',
