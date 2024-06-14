@@ -95,19 +95,19 @@ async function formatNFe(shopifyOrder: ShopifyOrder, customerCpf: string) {
         dataOperacao: getDate(),
         contato: {
             nome: `${shopifyOrder.customer.first_name} ${shopifyOrder.customer.last_name}`,
-            email: shopifyOrder.customer.email,
+            email: shopifyOrder.customer.email.trim(),
             telefone: shopifyOrder.customer.phone,
             tipoPessoa: 'F',
             contribuinte: 9, // "Não contribuente"
             numeroDocumento: customerCpf,
             endereco: {
-                bairro: shopifyOrder.shipping_address.company,
-                cep: shopifyOrder.shipping_address.zip,
-                endereco: street,
-                numero: number,
+                bairro: shopifyOrder.shipping_address.company.trim(),
+                cep: shopifyOrder.shipping_address.zip.trim(),
+                endereco: street.trim(),
+                numero: number.trim(),
                 complemento: shopifyOrder.shipping_address.address2,
-                municipio: shopifyOrder.shipping_address.city,
-                uf: shopifyOrder.shipping_address.province_code,
+                municipio: shopifyOrder.shipping_address.city.trim(),
+                uf: shopifyOrder.shipping_address.province_code.trim(),
                 pais: shopifyOrder.shipping_address.country_code
             },
         },
