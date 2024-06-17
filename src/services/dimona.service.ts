@@ -189,10 +189,13 @@ export async function createOrdersFromShopify() {
             nfeStatus = status;
             const orderId = summary.dimonaResponse.order;
 
+            nfeStatus = `/// { orderId: ${orderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`
             // If the NFe was succefully generated, send it to Dimona
             if (orderId && nfe && success) {
                 try {
-                    await dimonaApi.sendNFe(nfe, orderId);
+                    const response = await dimonaApi.sendNFe(nfe, orderId);
+
+                    if (response) nfeStatus += `/// DimonaResponse: ${JSON.stringify(response)}`
                 }
                 catch (error) {
                     nfeStatus += ` /// Não foi possível enviar NFe para Dimona: ${error.message || error}`
