@@ -176,7 +176,7 @@ export async function createOrdersFromShopify() {
         // Create Dimona order and get summary
         const summary = await createDimonaOrder(order);
 
-        let nfeStatus = 'empty';
+        let nfeStatus = 'Error on Dimona order creation';
 
         // When Dimona order creation has success
         if (!(`${summary.dimonaResponse.status}`[0] === '4')) {
@@ -186,19 +186,19 @@ export async function createOrdersFromShopify() {
             // Generate NFe on Bling
             const { status, success, nfe } = await generateNFe(order);
 
-            nfeStatus = status;
+            nfeStatus = `${status}`;
             const orderId = summary.dimonaResponse.order;
 
-            nfeStatus += ` /// { orderId: ${orderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`
+            nfeStatus = `${nfeStatus} /// { orderId: ${orderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`
             // If the NFe was succefully generated, send it to Dimona
             if (orderId && nfe && success) {
                 try {
                     const response = await dimonaApi.sendNFe(nfe, orderId);
 
-                    if (response) nfeStatus += ` /// DimonaResponse: ${JSON.stringify(response)}`
+                    if (response) nfeStatus = `${nfeStatus} /// DimonaResponse: ${JSON.stringify(response)}`
                 }
                 catch (error) {
-                    nfeStatus += ` /// Não foi possível enviar NFe para Dimona: ${error.message || error}`
+                    nfeStatus = `${nfeStatus} /// Não foi possível enviar NFe para Dimona: ${error.message || error}`
                 }
             }
         }
