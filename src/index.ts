@@ -1,7 +1,7 @@
 import express from 'express'
 import { createDimonaOrders } from './controllers/create-dimona-orders';
 import { orderPaidEndpoint } from './controllers/order-paid';
-import { getShopifyOrder } from './services/shopify.service';
+import { addTracking, getShopifyOrder } from './services/shopify.service';
 
 require('dotenv').config()
 
@@ -24,6 +24,14 @@ app.post(`/order-paid`, orderPaidEndpoint)
 app.get('/create-dimona-orders', createDimonaOrders)
 
 app.get('/shopify-order', getShopifyOrder)
+
+app.post('/add-tracking', async (req, res) => {
+  const orderId = req.body.orderId as number;
+  const dimonaOrderId = req.body.dimonaOrderId as string;
+
+  const result = await addTracking(orderId, dimonaOrderId);
+  res.json({ trackingUrl: result.tracking_url })
+})
 
 app.listen(port, () =>
   console.log(`🚀 Server ready at: http://localhost:${port}`),

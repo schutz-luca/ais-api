@@ -6,7 +6,7 @@ import { ShopifyOrder } from '../model/shopify.model';
 import { log } from '../utils/log';
 import { reduceFilesArray } from '../utils/reduceFilesArray';
 import { insertOrderPaid, listOrderPaid } from '../db/orders-paid';
-import { getDimonaItems, getPaidOrders } from './shopify.service';
+import { addTracking, getDimonaItems, getPaidOrders } from './shopify.service';
 import { getStreetAndNumber } from '../utils/getStreetAndNumber';
 import { generateNFe } from './bling.service';
 
@@ -177,6 +177,7 @@ export async function createOrdersFromShopify() {
         const summary = await createDimonaOrder(order);
 
         let nfeStatus = 'Error on Dimona order creation';
+        let trackingStatus = 'Not tracked';
 
         // When Dimona order creation has success
         if (!(`${summary.dimonaResponse.status}`[0] === '4')) {
@@ -187,13 +188,14 @@ export async function createOrdersFromShopify() {
             const { status, success, nfe } = await generateNFe(order);
 
             nfeStatus = `${status}`;
-            const orderId = summary.dimonaResponse.order;
+            const dimonaOrderId = summary.dimonaResponse.order;
 
-            nfeStatus = `${nfeStatus} /// { orderId: ${orderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`
-            // If the NFe was succefully generated, send it to Dimona
-            if (orderId && nfe && success) {
+            nfeStatus = `${nfeStatus} /// { dimonaOrderId: ${dimonaOrderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`;
+
+            // Send NFe to Dimona
+            if (dimonaOrderId && nfe && success) {
                 try {
-                    const response = await dimonaApi.sendNFe(nfe, orderId);
+                    const response = await dimonaApi.sendNFe(nfe, dimonaOrderId);
 
                     if (response) nfeStatus = `${nfeStatus} /// DimonaResponse: ${JSON.stringify(response)}`
                 }
@@ -201,9 +203,13 @@ export async function createOrdersFromShopify() {
                     nfeStatus = `${nfeStatus} /// Não foi possível enviar NFe para Dimona: ${error.message || error}`
                 }
             }
+
+            // Add tracking to Shopify order
+            const trackingResult = await addTracking(order.id, dimonaOrderId);
+            trackingStatus = trackingResult?.tracking_url ? trackingResult?.tracking_url : trackingResult.message || trackingResult;
         }
 
-        return { ...summary, nfeStatus }
+        return { ...summary, nfeStatus, trackingStatus }
     })
     const summaries = (await Promise.all(promises)).filter(item => !!item);
 

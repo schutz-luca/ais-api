@@ -13,6 +13,40 @@ function getShopifyClient() {
     });
 }
 
+export async function addTracking(orderId: number, dimonaOrderId: string) {
+    try {
+        const shopifyClient = getShopifyClient();
+
+        // Create tracking data
+        let trackingUrl = process.env.TRACKING_URL_BASE || '';
+        const trackingNumber = dimonaOrderId.split('-').join('');
+        trackingUrl = `${trackingUrl}/${trackingNumber}`;
+
+        // Get fulfillment order data
+        const fulfillmentOrderId = (await shopifyClient.order.fulfillmentOrders(orderId))[0].id;
+        const fullfilment = await shopifyClient.fulfillmentOrder.fulfillments(fulfillmentOrderId);
+
+        const updateParams = {
+            tracking_info: {
+                number: trackingNumber,
+                url: trackingUrl,
+                company: 'Outro'
+            },
+            notify_customer: true,
+            message: 'Delivery status: ' + trackingUrl
+        };
+
+        const result = await shopifyClient.fulfillment.updateTracking(fullfilment[0].id, updateParams);
+
+        return result;
+    }
+    catch (error) {
+        console.error(error);
+        return error;
+    }
+
+}
+
 export async function getCustomerCpf(graphqlId: string) {
     const shopifyClient = getShopifyClient();
 
