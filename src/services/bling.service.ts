@@ -4,6 +4,7 @@ import { DimonaSendNFe } from "../dto/dimona.dto";
 import { NFe } from "../model/bling.model"
 import { ShopifyOrder } from "../model/shopify.model"
 import { getStreetAndNumber } from "../utils/getStreetAndNumber"
+import { dimonaApi } from "./dimona.service";
 import { getCustomerCpf } from './shopify.service';
 
 
@@ -95,19 +96,19 @@ async function formatNFe(shopifyOrder: ShopifyOrder, customerCpf: string) {
         dataOperacao: getDate(),
         contato: {
             nome: `${shopifyOrder.customer.first_name} ${shopifyOrder.customer.last_name}`,
-            email: shopifyOrder.customer.email.trim(),
+            email: shopifyOrder.customer.email?.trim(),
             telefone: shopifyOrder.customer.phone,
             tipoPessoa: 'F',
             contribuinte: 9, // "Não contribuente"
             numeroDocumento: customerCpf,
             endereco: {
-                bairro: shopifyOrder.shipping_address.company.trim(),
-                cep: shopifyOrder.shipping_address.zip.trim(),
-                endereco: street.trim(),
-                numero: number.trim(),
+                bairro: shopifyOrder.shipping_address.company?.trim(),
+                cep: shopifyOrder.shipping_address.zip?.trim(),
+                endereco: street?.trim(),
+                numero: number?.trim(),
                 complemento: shopifyOrder.shipping_address.address2,
-                municipio: shopifyOrder.shipping_address.city.trim(),
-                uf: shopifyOrder.shipping_address.province_code.trim(),
+                municipio: shopifyOrder.shipping_address.city?.trim(),
+                uf: shopifyOrder.shipping_address.province_code?.trim(),
                 pais: shopifyOrder.shipping_address.country_code
             },
         },
@@ -212,5 +213,26 @@ export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean)
         }
     }
 
+}
+
+export async function addNFe(order: ShopifyOrder, dimonaOrderId: string) {
+    // Generate NFe on Bling
+    const { status, success, nfe } = await generateNFe(order);
+  
+    let nfeStatus = `${status} /// { dimonaOrderId: ${dimonaOrderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`;
+  
+    // Send NFe to Dimona
+    if (dimonaOrderId && nfe && success) {
+      try {
+        const response = await dimonaApi.sendNFe(nfe, dimonaOrderId);
+  
+        if (response) nfeStatus = `${nfeStatus} /// DimonaResponse: ${JSON.stringify(response)}`
+      }
+      catch (error) {
+        nfeStatus = `${nfeStatus} /// Unable to send NFe to Dimona: ${error.message || error}`
+      }
+    }
+
+    return nfeStatus;
 }
 

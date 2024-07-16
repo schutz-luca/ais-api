@@ -1,0 +1,1 @@
+export const UNEXECUTED = 'Function not executed'

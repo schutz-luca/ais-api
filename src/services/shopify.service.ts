@@ -13,7 +13,7 @@ function getShopifyClient() {
     });
 }
 
-export async function addTracking(orderId: number, dimonaOrderId: string) {
+export async function addTracking(orderId: number, dimonaOrderId: string): Promise<string> {
     try {
         const shopifyClient = getShopifyClient();
 
@@ -38,7 +38,7 @@ export async function addTracking(orderId: number, dimonaOrderId: string) {
 
         const result = await shopifyClient.fulfillment.updateTracking(fullfilment[0].id, updateParams);
 
-        return result;
+        return result?.tracking_url ? result?.tracking_url : result.status;
     }
     catch (error) {
         console.error(error);
@@ -70,11 +70,15 @@ export async function getCustomerCpf(graphqlId: string) {
     return result.order.localizationExtensions.edges[0].node.value as string;
 }
 
-export async function getShopifyOrder(req, res) {
+export async function findShopifyOrder(orderId: number) {
     const shopifyClient = getShopifyClient();
+    return await shopifyClient.order.get(orderId) as unknown as ShopifyOrder;
+}
+
+export async function getShopifyOrder(req, res) {
     const id = req.query.id;
 
-    const order = await shopifyClient.order.get(id) as unknown as ShopifyOrder;
+    const order = await findShopifyOrder(id);
 
     res.json(order);
 }

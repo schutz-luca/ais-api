@@ -1,7 +1,8 @@
 import express from 'express'
 import { createDimonaOrders } from './controllers/create-dimona-orders';
 import { orderPaidEndpoint } from './controllers/order-paid';
-import { addTracking, getShopifyOrder } from './services/shopify.service';
+import { addTracking, findShopifyOrder, getShopifyOrder } from './services/shopify.service';
+import { addNFe } from './services/bling.service';
 
 require('dotenv').config()
 
@@ -30,7 +31,17 @@ app.post('/add-tracking', async (req, res) => {
   const dimonaOrderId = req.body.dimonaOrderId as string;
 
   const result = await addTracking(orderId, dimonaOrderId);
-  res.json({ trackingUrl: result.tracking_url })
+  res.json({ trackingStatus: result })
+})
+
+app.post('/add-nfe', async (req, res) => {
+  const orderId = req.body.orderId as number;
+  const dimonaOrderId = req.body.dimonaOrderId as string;
+
+  const order = await findShopifyOrder(orderId);
+  const nfeStatus = await addNFe(order, dimonaOrderId)
+
+  res.json({ nfeStatus })
 })
 
 app.listen(port, () =>
