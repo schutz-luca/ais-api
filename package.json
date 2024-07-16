@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "nodemon src/index.ts",
+    "deploy": "npm run build && func azure functionapp publish ais-api",
     "build": "tsc",
     "watch": "tsc -w",
     "clean": "rimraf dist",
