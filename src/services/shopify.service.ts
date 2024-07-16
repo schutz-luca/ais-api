@@ -38,7 +38,7 @@ export async function addTracking(orderId: number, dimonaOrderId: string): Promi
 
         const result = await shopifyClient.fulfillment.updateTracking(fullfilment[0].id, updateParams);
 
-        return result?.tracking_url ? result?.tracking_url : result.status;
+        return result?.tracking_url ? result?.tracking_url : result?.status || 'Not tracked';
     }
     catch (error) {
         console.error(error);

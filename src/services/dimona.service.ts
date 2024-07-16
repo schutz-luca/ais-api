@@ -155,7 +155,25 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
             duration
         }
 
-        return summary
+        // Post order creation
+
+        let nfeStatus = UNEXECUTED;
+        let trackingStatus = UNEXECUTED;
+
+        // When Dimona order creation has success
+        if (!dimonaResult.error && dimonaResult.order) {
+            // Insert its id to Order Paid table
+            await insertOrderPaid(shopifyOrder.id);
+            const dimonaOrderId = dimonaResult.order;
+
+            // Generate and add NFe to Dimona order
+            nfeStatus = await addNFe(shopifyOrder, dimonaOrderId);
+
+            // Add tracking to Shopify order
+            trackingStatus = await addTracking(shopifyOrder.id, dimonaOrderId);
+        }
+
+        return { ...summary, nfeStatus, trackingStatus }
     }
     catch (error) {
         await insertLog(LogsKind.INFO, 'Error on createDimonaOrder', error);
@@ -171,27 +189,10 @@ export async function createOrdersFromShopify() {
 
     const promises = orders.map(async (order) => {
         // If the order has been already processed, return
-        if (existingOrders?.includes(`${order.id}`))
-            return
+        if (existingOrders?.includes(`${order.id}`)) return
 
         // Create Dimona order and get summary
-        const summary = await createDimonaOrder(order);
-
-        let nfeStatus = UNEXECUTED;
-        let trackingStatus = UNEXECUTED;
-
-        // When Dimona order creation has success
-        if (!(`${summary.dimonaResponse.status}`[0] === '4')) {
-            // Insert its id to Order Paid table
-            await insertOrderPaid(order.id);
-            const dimonaOrderId = summary.dimonaResponse.order;
-            // Generate and add NFe to Dimona order
-            nfeStatus = await addNFe(order, dimonaOrderId);
-            // Add tracking to Shopify order
-            trackingStatus = await addTracking(order.id, dimonaOrderId);
-        }
-
-        return { ...summary, nfeStatus, trackingStatus }
+        return await createDimonaOrder(order);
     })
     const summaries = (await Promise.all(promises)).filter(item => !!item);
 
