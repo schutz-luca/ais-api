@@ -1,10 +1,11 @@
 import Shopify from 'shopify-api-node';
+import { LogsKind } from '../db/logs';
+import { DimonaOrderItem } from '../dto/dimona.dto';
 import { ShopifyOrder } from "../model/shopify.model";
+import { getBackMockupQuery } from '../utils/graphqlQueries';
+import { log } from '../utils/log';
 import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
-import { DimonaOrderItem } from '../dto/dimona.dto';
-import { log } from '../utils/log';
-import { LogsKind } from '../db/logs';
 
 function getShopifyClient() {
     return new Shopify({
@@ -72,7 +73,8 @@ export async function getCustomerCpf(graphqlId: string) {
 
 export async function findShopifyOrder(orderId: number) {
     const shopifyClient = getShopifyClient();
-    return await shopifyClient.order.get(orderId) as unknown as ShopifyOrder;
+    const order = await shopifyClient.order.get(orderId) as unknown as ShopifyOrder;
+    return order;
 }
 
 export async function getShopifyOrder(req, res) {
@@ -83,10 +85,32 @@ export async function getShopifyOrder(req, res) {
     res.json(order);
 }
 
-async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId: number | null) {
+async function getBackMock(shopifyClient: Shopify, productId: number, gender: string, color: string) {
+  const query = getBackMockupQuery(productId);
+  const graphQl = await shopifyClient.graphql(query);
+
+  // Filter product images by altText to find the back mockup
+  const alt = `${gender}-${color.replace(/\s+/g, '-')}-back`.toLowerCase();
+
+  const images: {altText: string, url: string}[] = graphQl.product.media.edges.map(item => item.node.preview.image);
+
+  const mockBack = images.filter(item=>item.altText.includes(alt));
+
+  if(mockBack.length > 0)
+    return mockBack[0]
+
+  return null
+}
+
+async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId: number | null, gender: string, color: string, hasBack: boolean) {
     try {
-        const mockImage = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' })
-        return [mockImage.src];
+        const mockFront = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' });
+        const mockBack = hasBack ? await getBackMock(shopifyClient, productId, gender, color) : null;
+
+        if(mockBack)
+          return [mockFront.src, mockBack.url]
+
+        return [mockFront.src];
     }
     catch (error) {
         log(LogsKind.ERROR, 'Error on handleShopifyMock: ', error)
@@ -112,12 +136,15 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
             return
 
         const variant = await shopifyClient.productVariant.get(product.variant_id, { fields: 'image_id,option1,sku,option3,option2' });
+        const genderChar = variant.option1?.toLowerCase().charAt(0);
 
         const designs = await getDesignInDrive(product.sku);
-        const mocks = await getShopifyMock(shopifyClient, product.product_id, variant.image_id);
+
+        const hasBack = designs.length > 1;
+        const mocks = await getShopifyMock(shopifyClient, product.product_id, variant.image_id, genderChar, variant.option2, hasBack);
 
         // Get Dimona product using variants data
-        const dimonaSkuId = await correlateProduct(variant.option1, variant.sku, variant.option3, variant.option2)
+        const dimonaSkuId = await correlateProduct(genderChar, variant.sku, variant.option3, variant.option2)
 
         const item = {
             sku: variant.sku,

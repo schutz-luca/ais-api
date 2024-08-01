@@ -52,10 +52,9 @@ export async function correlateProduct(gender: string | null, sku: string | null
 
     // Normalize strings to lower case and get initials
     const modelInitials = sku.toLowerCase().split('-')[0];
-    const genderChar = gender.toLowerCase().charAt(0);
 
     // Use shopify variants data to get current AIS product
-    const product = aisProducts.find(product => product.gender === genderChar && product.model === modelInitials);
+    const product = aisProducts.find(product => product.gender === gender && product.model === modelInitials);
 
     // Use PRIME product when color is black or white
     let dimonaProduct;
