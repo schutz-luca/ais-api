@@ -48,7 +48,7 @@ export async function addTracking(orderId: number, dimonaOrderId: string): Promi
 
 }
 
-export async function getCustomerCpf(graphqlId: string) {
+export async function getCustomerCpf(graphqlId: string): Promise<string | undefined> {
     const shopifyClient = getShopifyClient();
 
     const result = await shopifyClient.graphql(`
@@ -68,7 +68,7 @@ export async function getCustomerCpf(graphqlId: string) {
         }
       }`);
 
-    return result.order.localizationExtensions.edges[0].node.value as string;
+    return result.order.localizationExtensions.edges[0]?.node.value;
 }
 
 export async function findShopifyOrder(orderId: number) {

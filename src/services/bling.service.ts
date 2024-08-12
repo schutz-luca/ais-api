@@ -26,6 +26,9 @@ const blingApi = {
                 body: JSON.stringify(body)
             })).json()
 
+            if(!result.access_token || !result.refresh_token)
+                throw(result);
+
             await updateTokens(result.access_token, result.refresh_token);
             console.log('Token refreshed');
         }
@@ -79,7 +82,7 @@ function getDate() {
         .join(' ');
 }
 
-async function formatNFe(shopifyOrder: ShopifyOrder, customerCpf: string) {
+export async function formatNFe(shopifyOrder: ShopifyOrder, customerCpf: string) {
     const { street, number } = getStreetAndNumber(shopifyOrder.shipping_address.address1)
 
     const nfeFixedFields = {
@@ -184,7 +187,7 @@ export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean)
 
         // Check if it was sent succefully
         const xml = sendResult.data.xml as string;
-        const sentNfe = xml.includes('Autorizado o uso da NF-e') ? 'NFe enviada' : `NFe não pode ser enviada... >>> ${xml}`;
+        const sentNfe = xml?.includes('Autorizado o uso da NF-e') ? 'NFe enviada' : `NFe não pode ser enviada... >>> ${xml}`;
         
         // Add NFe to DB
         await addNfNumber(`${shopifyOrder.id}`);
