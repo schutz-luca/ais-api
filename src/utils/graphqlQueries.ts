@@ -1,4 +1,4 @@
-export const getBackMockupQuery = (productId) => `
+export const getFrontMockupQuery = (productId) => `
             query {
         product(id:"gid://shopify/Product/${productId}") {
         title

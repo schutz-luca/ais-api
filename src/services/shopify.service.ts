@@ -2,7 +2,7 @@ import Shopify from 'shopify-api-node';
 import { LogsKind } from '../db/logs';
 import { DimonaOrderItem } from '../dto/dimona.dto';
 import { ShopifyOrder } from "../model/shopify.model";
-import { getBackMockupQuery } from '../utils/graphqlQueries';
+import { getFrontMockupQuery } from '../utils/graphqlQueries';
 import { log } from '../utils/log';
 import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
@@ -74,6 +74,8 @@ export async function getCustomerCpf(graphqlId: string): Promise<string | undefi
 export async function findShopifyOrder(orderId: number) {
     const shopifyClient = getShopifyClient();
     const order = await shopifyClient.order.get(orderId) as unknown as ShopifyOrder;
+    const items = await getDimonaItems(order)
+    console.log(items);
     return order;
 }
 
@@ -85,32 +87,35 @@ export async function getShopifyOrder(req, res) {
     res.json(order);
 }
 
-async function getBackMock(shopifyClient: Shopify, productId: number, gender: string, color: string) {
-  const query = getBackMockupQuery(productId);
-  const graphQl = await shopifyClient.graphql(query);
+async function getFrontMock(shopifyClient: Shopify, productId: number, gender: string, color: string) {
+    const query = getFrontMockupQuery(productId);
+    const graphQl = await shopifyClient.graphql(query);
 
-  // Filter product images by altText to find the back mockup
-  const alt = `${gender}-${color.replace(/\s+/g, '-')}-back`.toLowerCase();
+    // Filter product images by altText to find the back mockup
+    const alt = `${gender}-${color.replace(/\s+/g, '-')}-front`.toLowerCase();
 
-  const images: {altText: string, url: string}[] = graphQl.product.media.edges.map(item => item.node.preview.image);
+    const images: { altText: string, url: string }[] = graphQl.product.media.edges.map(item => item.node.preview.image);
 
-  const mockBack = images.filter(item=>item.altText.includes(alt));
+    const frontMock = images.filter(item => item.altText.includes(alt));
 
-  if(mockBack.length > 0)
-    return mockBack[0]
+    if (frontMock.length > 0)
+        return frontMock[0]
 
-  return null
+    return null
 }
 
 async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId: number | null, gender: string, color: string, hasBack: boolean) {
     try {
-        const mockFront = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' });
-        const mockBack = hasBack ? await getBackMock(shopifyClient, productId, gender, color) : null;
+        if (!hasBack) {
+            const mockFront = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' });
+            return [mockFront.src]
+        }
+        else{
+            const mockFront = await getFrontMock(shopifyClient, productId, gender, color);
+            const mockBack = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' });
 
-        if(mockBack)
-          return [mockFront.src, mockBack.url]
-
-        return [mockFront.src];
+            return [mockFront?.url, mockBack.src]
+        }
     }
     catch (error) {
         log(LogsKind.ERROR, 'Error on handleShopifyMock: ', error)
