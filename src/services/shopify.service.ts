@@ -74,8 +74,6 @@ export async function getCustomerCpf(graphqlId: string): Promise<string | undefi
 export async function findShopifyOrder(orderId: number) {
     const shopifyClient = getShopifyClient();
     const order = await shopifyClient.order.get(orderId) as unknown as ShopifyOrder;
-    const items = await getDimonaItems(order)
-    console.log(items);
     return order;
 }
 
