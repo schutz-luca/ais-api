@@ -3,6 +3,7 @@ import { LogsKind } from '../db/logs';
 import { DimonaOrderItem } from '../dto/dimona.dto';
 import { ShopifyOrder } from "../model/shopify.model";
 import { getFrontMockupQuery } from '../utils/graphqlQueries';
+import { normalizePt } from '../utils/normalizePt';
 import { log } from '../utils/log';
 import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
@@ -90,7 +91,7 @@ async function getFrontMock(shopifyClient: Shopify, productId: number, gender: s
     const graphQl = await shopifyClient.graphql(query);
 
     // Filter product images by altText to find the back mockup
-    const alt = `${gender}-${color.replace(/\s+/g, '-')}-front`.toLowerCase();
+    const alt = normalizePt(`${gender === 'p' ? 'm' : gender}-${color.replace(/\s+/g, '-')}-front`.toLowerCase());
 
     const images: { altText: string, url: string }[] = graphQl.product.media.edges.map(item => item.node.preview.image);
 
@@ -108,7 +109,7 @@ async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId
             const mockFront = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' });
             return [mockFront.src]
         }
-        else{
+        else {
             const mockFront = await getFrontMock(shopifyClient, productId, gender, color);
             const mockBack = await shopifyClient.productImage.get(productId, imageId || 0, { fields: 'src' });
 
