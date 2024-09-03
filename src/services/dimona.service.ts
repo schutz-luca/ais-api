@@ -175,7 +175,8 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         return { ...summary, nfeStatus, trackingStatus }
     }
     catch (error) {
-        await insertLog(LogsKind.INFO, 'Error on createDimonaOrder', error);
+        console.error(error);
+        await insertLog(LogsKind.INFO, 'Error on createDimonaOrder', { ...error, message: error?.message });
     }
 }
 

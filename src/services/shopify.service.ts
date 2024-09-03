@@ -144,6 +144,9 @@ export async function getDimonaItems(shopifyOrder: ShopifyOrder) {
 
         const designs = await getDesignInDrive(product.sku);
 
+        if (designs === undefined)
+            throw { message: `Product (${product.sku}) without design` }
+
         const hasBack = designs.length > 1;
         const mocks = await getShopifyMock(shopifyClient, product.product_id, variant.image_id, genderChar, variant.option2, hasBack);
 
