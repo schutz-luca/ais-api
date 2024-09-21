@@ -186,7 +186,7 @@ export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean)
         const sendResult = await blingApi.sendNFe(nfeId, tokens.access);
 
         // Check if it was sent succefully
-        const xml = sendResult.data.xml as string;
+        const xml = (sendResult?.data?.xml || JSON.stringify(sendResult)) as string;
         const sentNfe = xml?.includes('Autorizado o uso da NF-e') ? 'NFe enviada' : `NFe não pode ser enviada... >>> ${xml}`;
         
         // Add NFe to DB
