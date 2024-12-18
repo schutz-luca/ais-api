@@ -14,7 +14,7 @@ export async function addNfNumber(orderId: string) {
 
 export async function getLastNf() {
     try {
-        const { rows } = await sql`select * from nf order by "timestamp" desc limit 1`;
+        const { rows } = await sql`select * from nf order by "number" desc limit 1`;
         return rows[0]
     }
     catch (error) {

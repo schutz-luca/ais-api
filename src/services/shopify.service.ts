@@ -117,7 +117,7 @@ async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId
         }
     }
     catch (error) {
-        log(LogsKind.ERROR, 'Error on handleShopifyMock: ', error)
+        await log(LogsKind.ERROR, 'Error on handleShopifyMock: ', error)
         return undefined
     }
 }

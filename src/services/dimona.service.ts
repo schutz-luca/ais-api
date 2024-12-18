@@ -181,21 +181,29 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
 }
 
 export async function createOrdersFromShopify() {
-    // Get paid orders from Shopify
-    const orders = await getPaidOrders();
+    try {
+        // Get paid orders from Shopify
+        const orders = await getPaidOrders();
 
-    // Get already processed orders
-    const existingOrders = await listOrderPaid();
+        // Get already processed orders
+        const existingOrders = await listOrderPaid();
 
-    const promises = orders.map(async (order) => {
-        // If the order has been already processed, return
-        if (existingOrders?.includes(`${order.id}`)) return
+        const promises = orders.map(async (order) => {
+            // If the order has been already processed, return
+            if (existingOrders?.includes(`${order.id}`)) return
 
-        // Create Dimona order and get summary
-        return await createDimonaOrder(order);
-    })
-    const summaries = (await Promise.all(promises)).filter(item => !!item);
+            // Create Dimona order and get summary
+            return await createDimonaOrder(order);
+        })
+        const summaries = (await Promise.all(promises)).filter(item => !!item);
 
-    await log(LogsKind.INFO, 'create-dimona-orders', summaries)
-    return summaries
+        if (Object.keys(summaries).length > 0)
+            await log(LogsKind.INFO, 'create-dimona-orders', summaries)
+        return summaries
+    }
+    catch (error) {
+        await log(LogsKind.ERROR, 'error-create-dimona-orders', error)
+        return [error];
+    }
+
 }
