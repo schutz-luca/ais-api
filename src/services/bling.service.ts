@@ -26,8 +26,8 @@ const blingApi = {
                 body: JSON.stringify(body)
             })).json()
 
-            if(!result.access_token || !result.refresh_token)
-                throw(result);
+            if (!result.access_token || !result.refresh_token)
+                throw (result);
 
             await updateTokens(result.access_token, result.refresh_token);
             console.log('Token refreshed');
@@ -188,7 +188,7 @@ export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean)
         // Check if it was sent succefully
         const xml = (sendResult?.data?.xml || JSON.stringify(sendResult)) as string;
         const sentNfe = xml?.includes('Autorizado o uso da NF-e') ? 'NFe enviada' : `NFe não pode ser enviada... >>> ${xml}`;
-        
+
         // Add NFe to DB
         await addNfNumber(`${shopifyOrder.id}`);
 
@@ -221,19 +221,21 @@ export async function generateNFe(shopifyOrder: ShopifyOrder, isRetry?: boolean)
 export async function addNFe(order: ShopifyOrder, dimonaOrderId: string) {
     // Generate NFe on Bling
     const { status, success, nfe } = await generateNFe(order);
-  
+
     let nfeStatus = `${status} /// { dimonaOrderId: ${dimonaOrderId}, nfe: ${JSON.stringify(nfe)}, success: ${success} }`;
-  
+
     // Send NFe to Dimona
     if (dimonaOrderId && nfe && success) {
-      try {
-        const response = await dimonaApi.sendNFe(nfe, dimonaOrderId);
-  
-        if (response) nfeStatus = `${nfeStatus} /// DimonaResponse: ${JSON.stringify(response)}`
-      }
-      catch (error) {
-        nfeStatus = `${nfeStatus} /// Unable to send NFe to Dimona: ${error.message || error}`
-      }
+        try {
+            if (nfe?.link) {
+                const response = await dimonaApi.sendNFe(nfe, dimonaOrderId);
+
+                if (response) nfeStatus = `${nfeStatus} /// DimonaResponse: ${JSON.stringify(response)}`
+            }
+        }
+        catch (error) {
+            nfeStatus = `${nfeStatus} /// Unable to send NFe to Dimona: ${error.message || error}`
+        }
     }
 
     return nfeStatus;
