@@ -188,21 +188,23 @@ export async function createOrdersFromShopify() {
         // Get already processed orders
         const existingOrders = await listOrderPaid();
 
-        const promises = orders.map(async (order) => {
+        const summaries = [];
+
+        for (const order of orders) {
             // If the order has been already processed, return
             if (existingOrders?.includes(`${order.id}`)) return
 
             // Create Dimona order and get summary
-            return await createDimonaOrder(order);
-        })
-        const summaries = (await Promise.all(promises)).filter(item => !!item);
+            const item = await createDimonaOrder(order);
 
-        if (Object.keys(summaries).length > 0)
-            await log(LogsKind.INFO, 'create-dimona-orders', summaries)
+            if (item) summaries.push(item);
+        }
+
+        if (summaries?.length > 0) await log(LogsKind.INFO, 'Process completed', summaries)
         return summaries
     }
     catch (error) {
-        await log(LogsKind.ERROR, 'error-create-dimona-orders', error)
+        await log(LogsKind.ERROR, 'Error on process', error)
         return [error];
     }
 
