@@ -131,7 +131,7 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
     try {
         // Preparing logs
         const before = (new Date()).getTime();
-        await log(LogsKind.INFO, 'Starting process...', {
+        await log(LogsKind.INFO, 'Starting process', {
             order: shopifyOrder.id
         })
 
@@ -140,7 +140,6 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
         // Send Dimona order creation request
         const dimonaResult: any = await dimonaApi.createOrder(dimonaOrder);
 
-        const duration = (((new Date()).getTime()) - before) / 1000;
 
         // Create summary log
         const summary = {
@@ -150,12 +149,13 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
                 mocks: item.mocks?.reduce(reduceFilesArray),
                 designs: item.designs?.reduce(reduceFilesArray),
             })),
-            dimonaResponse: dimonaResult,
-            duration
+            dimonaResponse: dimonaResult
         }
+        await log(LogsKind.INFO, 'Dimona result', {
+            dimonaResult
+        });
 
         // Post order creation
-
         let nfeStatus = UNEXECUTED;
         let trackingStatus = UNEXECUTED;
 
@@ -171,8 +171,9 @@ export async function createDimonaOrder(shopifyOrder: ShopifyOrder) {
             // Add tracking to Shopify order
             trackingStatus = await addTracking(shopifyOrder.id, dimonaOrderId);
         }
+        const duration = (((new Date()).getTime()) - before) / 1000;
 
-        return { ...summary, nfeStatus, trackingStatus }
+        return { ...summary, nfeStatus, trackingStatus, duration }
     }
     catch (error) {
         console.error(error);
@@ -190,17 +191,17 @@ export async function createOrdersFromShopify() {
 
         const summaries = [];
 
-        for (const order of orders) {
-            // If the order has been already processed, return
-            if (existingOrders?.includes(`${order.id}`)) return
+        for (let i = 0; i < orders.length; i++) {
+            // If the order has been already processed, just ignore
+            if (!existingOrders?.includes(`${orders[i].id}`)) {
+                // Create Dimona order and get summary
+                const item = await createDimonaOrder(orders[i]);
 
-            // Create Dimona order and get summary
-            const item = await createDimonaOrder(order);
-
-            if (item) summaries.push(item);
+                if (item) summaries.push(item);
+            }
         }
 
-        if (summaries?.length > 0) await log(LogsKind.INFO, 'Process completed', summaries)
+        await log(LogsKind.INFO, 'Process completed', { summaries })
         return summaries
     }
     catch (error) {

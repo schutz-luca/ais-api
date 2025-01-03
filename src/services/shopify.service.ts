@@ -44,7 +44,7 @@ export async function addTracking(orderId: number, dimonaOrderId: string): Promi
     }
     catch (error) {
         console.error(error);
-        return error;
+        return error?.message;
     }
 
 }
