@@ -172,3 +172,15 @@ export async function getPaidOrders() {
 
     return (await shopifyClient.order.list({ financial_status: 'paid' })) as unknown as ShopifyOrder[]
 }
+
+export async function getCollections() {
+    try {
+        const shopifyClient = getShopifyClient();
+        const customCollections = await shopifyClient.customCollection.list();
+        const smartCollections = await shopifyClient.smartCollection.list();
+        return [...smartCollections, ...customCollections];
+    }
+    catch (error) {
+        console.error('Error on getCollections:', error);
+    }
+}

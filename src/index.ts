@@ -1,8 +1,11 @@
 import express from 'express'
-import { createDimonaOrders } from './controllers/create-dimona-orders';
+import '@shopify/shopify-api/adapters/node';
+import cors from 'cors'
+import { createDimonaOrdersEndpoint } from './controllers/create-dimona-orders';
 import { orderPaidEndpoint } from './controllers/order-paid';
 import { addTracking, findShopifyOrder, getShopifyOrder } from './services/shopify.service';
 import { addNFe } from './services/bling.service';
+import { getCollectionsEndpoint } from './controllers/shopify/get-collections';
 
 require('dotenv').config()
 
@@ -14,6 +17,8 @@ const app = express()
 
 app.use(express.json())
 
+app.use(cors())
+
 app.get('/', (_, res) => {
   res.send('🚀 This is the AI Spirit API')
 })
@@ -22,9 +27,11 @@ app.get('/', (_, res) => {
 app.post(`/order-paid`, orderPaidEndpoint)
 
 // Get all Shopify paid orders and create Dimona orders if it wasn't created yet
-app.get('/create-dimona-orders', createDimonaOrders)
+app.get('/create-dimona-orders', createDimonaOrdersEndpoint)
 
 app.get('/shopify-order', getShopifyOrder)
+
+app.get('/collections', getCollectionsEndpoint)
 
 app.post('/add-tracking', async (req, res) => {
   const orderId = req.body.orderId as number;

@@ -1,6 +1,6 @@
 import { createOrdersFromShopify } from "../services/dimona.service"
 
-export async function createDimonaOrders(_, res) {
+export async function createDimonaOrdersEndpoint(_, res) {
     const summaries = await createOrdersFromShopify()
     res.send({ summaries })
 }
