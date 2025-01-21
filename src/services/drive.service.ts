@@ -3,6 +3,7 @@ import { DriveFile } from "../model/drive.model";
 const fs = require('fs').promises;
 const path = require('path');
 const { google } = require('googleapis');
+const streamifier = require('streamifier');
 
 const SCOPES = [
     'https://www.googleapis.com/auth/docs',
@@ -39,12 +40,24 @@ function handleDesignLinks(fileName: string, file: DriveFile, designs: string[])
         designs[1] = fileWebLink
 }
 
-
-export async function getDesignInDrive(sku: string) {
+const getDriveSdk = async () => {
     const authClient = await authorize();
     const authConfig = { version: 'v3', auth: authClient }
+    return google.drive(authConfig);
+}
 
-    const drive = google.drive(authConfig);
+const allowFile = async (drive, fileId) => {
+    await drive.permissions.create({
+        fileId: fileId,
+        resource: { 'type': 'anyone', 'role': 'reader' },
+        sendNotificationEmail: false,
+        supportsAllDrives: true
+    })
+}
+
+
+export async function getDesignInDrive(sku: string) {
+    const drive = await getDriveSdk();
 
     let designs: string[] = [];
 
@@ -84,4 +97,59 @@ export async function getDesignInDrive(sku: string) {
     if (designs.length === 0) return undefined
 
     return designs
+}
+
+export const uploadToGoogleDrive = async (file) => {
+    try {
+        const drive = await getDriveSdk();
+        const fileMetadata = {
+            name: file.originalname,
+            parents: [process.env.DRIVE_FOLDER_ID]
+        };
+
+        const payload = {
+            resource: fileMetadata,
+            media: {
+                mimeType: file.mimetype,
+                body: streamifier.createReadStream(file.buffer),
+            },
+            fields: 'id'
+        }
+        let fileUrl = '';
+
+        await drive.files.create(payload,
+            async (err, file) => {
+                if (err) {
+                    console.error('Error uploading file:', err);
+                } else {
+                    const fileId = file.data.id;
+                    console.log('File uploaded successfully with ID:', fileId);
+
+                    await allowFile(drive, fileId);
+
+                    // Retrieve the file's metadata to get the web URL
+                    drive.files.get(
+                        {
+                            fileId: fileId,
+                            fields: 'webViewLink, webContentLink',  // Request the URL fields
+                        },
+                        (err, fileData) => {
+                            if (err) {
+                                console.error('Error retrieving file metadata:', err);
+                            } else {
+                                fileUrl = fileData.data.webViewLink || fileData.data.webContentLink;
+                                console.log('File URL:', fileUrl);
+                            }
+                        }
+                    )
+                }
+            }
+        );
+
+        return fileUrl;
+    }
+    catch (error) {
+        console.error('Error uploading to Google Drive:', error.message);
+        throw error;
+    }
 }

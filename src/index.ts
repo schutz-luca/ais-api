@@ -1,11 +1,12 @@
 import express from 'express'
-import '@shopify/shopify-api/adapters/node';
 import cors from 'cors'
 import { createDimonaOrdersEndpoint } from './controllers/create-dimona-orders';
 import { orderPaidEndpoint } from './controllers/order-paid';
 import { addTracking, findShopifyOrder, getShopifyOrder } from './services/shopify.service';
 import { addNFe } from './services/bling.service';
 import { getCollectionsEndpoint } from './controllers/shopify/get-collections';
+import { uploadFileEndpoint } from './controllers/drive/upload-file';
+const multer = require("multer");
 
 require('dotenv').config()
 
@@ -14,6 +15,7 @@ require('dotenv').config()
 
 const port = process.env.PORT || '8080';
 const app = express()
+const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.json())
 
@@ -32,6 +34,8 @@ app.get('/create-dimona-orders', createDimonaOrdersEndpoint)
 app.get('/shopify-order', getShopifyOrder)
 
 app.get('/collections', getCollectionsEndpoint)
+
+app.post('/upload-file', upload.single("file"), uploadFileEndpoint)
 
 app.post('/add-tracking', async (req, res) => {
   const orderId = req.body.orderId as number;
