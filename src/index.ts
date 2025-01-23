@@ -6,6 +6,7 @@ import { addTracking, findShopifyOrder, getShopifyOrder } from './services/shopi
 import { addNFe } from './services/bling.service';
 import { getCollectionsEndpoint } from './controllers/shopify/get-collections';
 import { uploadFileEndpoint } from './controllers/drive/upload-file';
+import { insertProductEndpoint } from './controllers/insert-product';
 const multer = require("multer");
 
 require('dotenv').config()
@@ -36,6 +37,8 @@ app.get('/shopify-order', getShopifyOrder)
 app.get('/collections', getCollectionsEndpoint)
 
 app.post('/upload-file', upload.single("file"), uploadFileEndpoint)
+
+app.post('/insert-product', upload.single("file"), insertProductEndpoint);
 
 app.post('/add-tracking', async (req, res) => {
   const orderId = req.body.orderId as number;

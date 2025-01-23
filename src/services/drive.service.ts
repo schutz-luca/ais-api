@@ -1,4 +1,5 @@
 import { DriveFile } from "../model/drive.model";
+import { retryWithBackoff } from "../utils/retryWithBackoff";
 
 const fs = require('fs').promises;
 const path = require('path');
@@ -99,54 +100,60 @@ export async function getDesignInDrive(sku: string) {
     return designs
 }
 
+export const uploadFile = async (file, drive) => {
+    const fileMetadata = {
+        name: file.originalname,
+        parents: [process.env.DRIVE_FOLDER_ID]
+    };
+
+    const payload = {
+        resource: fileMetadata,
+        media: {
+            mimeType: file.mimetype,
+            body: streamifier.createReadStream(file.buffer),
+        },
+        fields: 'id'
+    }
+    let fileUrl = '';
+
+    await drive.files.create(payload,
+        async (error, file) => {
+            if (error) {
+                console.error('Error uploading file:', error);
+                throw error;
+            } else {
+                const fileId = file.data.id;
+                console.log('File uploaded successfully with ID:', fileId);
+
+                await allowFile(drive, fileId);
+
+                // Retrieve the file's metadata to get the web URL
+                drive.files.get(
+                    {
+                        fileId: fileId,
+                        fields: 'webViewLink, webContentLink',  // Request the URL fields
+                    },
+                    (error, fileData) => {
+                        if (error) {
+                            console.error('Error retrieving file metadata:', error);
+                            throw error;
+                        } else {
+                            fileUrl = fileData.data.webViewLink || fileData.data.webContentLink;
+                            console.log('File URL:', fileUrl);
+                        }
+                    }
+                )
+            }
+        }
+    );
+
+    return fileUrl;
+}
+
 export const uploadToGoogleDrive = async (file) => {
     try {
         const drive = await getDriveSdk();
-        const fileMetadata = {
-            name: file.originalname,
-            parents: [process.env.DRIVE_FOLDER_ID]
-        };
-
-        const payload = {
-            resource: fileMetadata,
-            media: {
-                mimeType: file.mimetype,
-                body: streamifier.createReadStream(file.buffer),
-            },
-            fields: 'id'
-        }
-        let fileUrl = '';
-
-        await drive.files.create(payload,
-            async (err, file) => {
-                if (err) {
-                    console.error('Error uploading file:', err);
-                } else {
-                    const fileId = file.data.id;
-                    console.log('File uploaded successfully with ID:', fileId);
-
-                    await allowFile(drive, fileId);
-
-                    // Retrieve the file's metadata to get the web URL
-                    drive.files.get(
-                        {
-                            fileId: fileId,
-                            fields: 'webViewLink, webContentLink',  // Request the URL fields
-                        },
-                        (err, fileData) => {
-                            if (err) {
-                                console.error('Error retrieving file metadata:', err);
-                            } else {
-                                fileUrl = fileData.data.webViewLink || fileData.data.webContentLink;
-                                console.log('File URL:', fileUrl);
-                            }
-                        }
-                    )
-                }
-            }
-        );
-
-        return fileUrl;
+        return await  retryWithBackoff(() => uploadFile(file, drive));
     }
     catch (error) {
         console.error('Error uploading to Google Drive:', error.message);
