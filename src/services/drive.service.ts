@@ -101,62 +101,68 @@ export async function getDesignInDrive(sku: string) {
 }
 
 export const uploadFile = async (file, drive) => {
-    const fileMetadata = {
-        name: file.originalname,
-        parents: [process.env.DRIVE_FOLDER_ID]
-    };
+    try {
+        const fileMetadata = {
+            name: file.originalname,
+            parents: [process.env.DRIVE_FOLDER_ID]
+        };
 
-    const payload = {
-        resource: fileMetadata,
-        media: {
-            mimeType: file.mimetype,
-            body: streamifier.createReadStream(file.buffer),
-        },
-        fields: 'id'
-    }
-    let fileUrl = '';
-
-    await drive.files.create(payload,
-        async (error, file) => {
-            if (error) {
-                console.error('Error uploading file:', error);
-                throw error;
-            } else {
-                const fileId = file.data.id;
-                console.log('File uploaded successfully with ID:', fileId);
-
-                await allowFile(drive, fileId);
-
-                // Retrieve the file's metadata to get the web URL
-                drive.files.get(
-                    {
-                        fileId: fileId,
-                        fields: 'webViewLink, webContentLink',  // Request the URL fields
-                    },
-                    (error, fileData) => {
-                        if (error) {
-                            console.error('Error retrieving file metadata:', error);
-                            throw error;
-                        } else {
-                            fileUrl = fileData.data.webViewLink || fileData.data.webContentLink;
-                            console.log('File URL:', fileUrl);
-                        }
-                    }
-                )
-            }
+        const payload = {
+            resource: fileMetadata,
+            media: {
+                mimeType: file.mimetype,
+                body: streamifier.createReadStream(file.buffer),
+            },
+            fields: 'id'
         }
-    );
+        let fileUrl = '';
 
-    return fileUrl;
+        const driveFile = await drive.files.create(payload);
+
+        const fileId = driveFile.data.id;
+        console.log('File uploaded successfully with ID:', fileId);
+
+        await allowFile(drive, fileId);
+
+        // Retrieve the file's metadata to get the web URL
+        const fileData = await drive.files.get({
+            fileId: fileId,
+            fields: 'webViewLink, webContentLink',  // Request the URL fields
+        })
+
+        fileUrl = fileData.data.webViewLink || fileData.data.webContentLink;
+        console.log('File URL:', fileUrl);
+        return fileUrl
+    }
+    catch (error) {
+        console.error('Error on upload file:', error);
+    }
 }
 
 export const uploadToGoogleDrive = async (file) => {
     try {
         const drive = await getDriveSdk();
-        return await  retryWithBackoff(() => uploadFile(file, drive));
+        return await retryWithBackoff(() => uploadFile(file, drive));
     }
     catch (error) {
         console.error('Error uploading to Google Drive:', error.message);
-        throw error;
     }
+}
+
+export const uploadDesigns = async (sku, front, back) => {
+    const urls: any = {};
+
+    if (front) {
+        front.originalname = `${sku}-DF`;
+        const url = await uploadToGoogleDrive(front);
+        urls.designFront = url;
+
+    }
+    if (back) {
+        back.originalname = `${sku}-DB`;
+        const url = await uploadToGoogleDrive(back);
+        urls.designBack = url;
+    }
+
+    return urls;
 }
