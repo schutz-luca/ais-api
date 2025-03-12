@@ -130,7 +130,7 @@ export const uploadFile = async (file, drive) => {
             fields: 'webViewLink, webContentLink',  // Request the URL fields
         })
 
-        fileUrl = fileData.data.webViewLink || fileData.data.webContentLink;
+        fileUrl = fileData.data.webContentLink;
         console.log('File URL:', fileUrl);
         return fileUrl
     }
