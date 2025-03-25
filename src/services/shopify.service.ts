@@ -7,6 +7,9 @@ import { normalizePt } from '../utils/normalizePt';
 import { log } from '../utils/log';
 import { getDesignInDrive } from './drive.service';
 import { correlateProduct } from './dimona.service';
+import { mergeArrays } from '../utils/mergeArrays';
+import { colorsMascGhost } from './printful.service';
+import { normalizeCamelCase } from '../utils/normalizeCamelCase';
 
 function getShopifyClient() {
     return new Shopify({
@@ -182,5 +185,128 @@ export async function getCollections() {
     }
     catch (error) {
         console.error('Error on getCollections:', error);
+    }
+}
+
+export async function createProduct(product, mockups) {
+    try {
+        const variantDefault = {
+            weight: 0.3,
+            weight_unit: "kg",
+            taxable: true,
+        }
+
+        const variantsPerGender = [
+            {
+                title: 'Masculino',
+                colors: ['Preto', 'Branco', 'Amarelo Canário', 'Laranja', 'Vermelho', 'Rosa Pink', 'Azul Royal', 'Azul Marinho', 'Cinza Mescla'],
+                sizes: ['P', 'M', 'G', 'GG', 'XGG']
+            },
+            {
+                title: 'Feminino',
+                colors: ['Preto', 'Branco', 'Amarelo Canário', 'Laranja', 'Vermelho', 'Rosa Pink', 'Azul Royal', 'Azul Marinho', 'Cinza Mescla'],
+                sizes: ['P', 'M', 'G', 'GG']
+            },
+            {
+                title: 'Plus Size',
+                colors: ['Preto', 'Branco'],
+                sizes: ['G1', 'G2', 'G3', 'G4']
+            }
+        ];
+
+        const options = [
+            {
+                name: 'Gênero',
+                values: variantsPerGender.map(gender => gender.title)
+            },
+            {
+                name: 'Cor',
+                values: mergeArrays(variantsPerGender.map(gender => gender.colors))
+            },
+            {
+                name: 'Tamanho',
+                values: mergeArrays(variantsPerGender.map(gender => gender.sizes))
+            }
+        ];
+
+        const variantsImagesPerId = {};
+        colorsMascGhost.map(key => variantsImagesPerId[key] = []);
+
+        const variants = [];
+        variantsPerGender.forEach(gender => {
+            gender.colors.forEach(color => {
+                gender.sizes.forEach(size => {
+                    const id = variants.length;
+                    variantsImagesPerId[normalizeCamelCase(color)].push(id);
+
+                    variants.push({
+                        title: `${gender.colors} / ${color} / ${size}`,
+                        price: product.price,
+                        option1: gender.title,
+                        option2: color,
+                        option3: size,
+                        sku: `${product.sku}-${id + 1}`,
+                        ...variantDefault
+                    })
+                })
+            })
+        })
+
+        const productResponse: any = await (await fetch(`https://aispirit.myshopify.com/admin/api/2025-04/products.json`, {
+            method: 'POST',
+            headers: {
+                'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "product": {
+                    "status": "draft",
+                    "title": product.title,
+                    "body_html": product.description,
+                    "vendor": "AiSpirit",
+                    "variants": variants,
+                    "options": options,
+                    "images": [
+                        // Product cover
+                        { src: mockups.mascGhost.preto },
+                        ...mockups.models.map(url => ({ src: url })),
+                        ...Object.values(mockups.femGhost).map(value => ({ src: value })),
+                    ]
+                }
+            })
+        })).json();
+
+        const createdVariants = productResponse.product.variants;
+        const createdProductId = productResponse.product.id;
+
+        const colorKeys = Object.keys(variantsImagesPerId);
+        let imagesResponse: any;
+
+        for (let i = 0; i < colorKeys.length; i++) {
+            const key = colorKeys[i];
+            const variantIds = variantsImagesPerId[key].map(variantPosition => createdVariants[variantPosition].id);
+
+            imagesResponse = await (await fetch(`https://aispirit.myshopify.com/admin/api/2025-04/products/${createdProductId}/images.json`, {
+                method: 'POST',
+                headers: {
+                    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "image": {
+                        "src": mockups.mascGhost[key],
+                        "variant_ids": variantIds
+                    }
+                }),
+            })).json();
+        };
+
+        return imagesResponse;
+    }
+    catch (error) {
+        console.error('Error on Shopify create product:', error);
+        return error;
     }
 }

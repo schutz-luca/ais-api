@@ -1,6 +1,6 @@
 import { wait } from "../utils/wait";
 
-const colorsMascGhost = ['preto', 'azulMarinho', 'vermelho', 'azulRoyal', 'rosaPink', 'laranja', 'amareloCanario', 'cinzaMescla', 'branco']
+export const colorsMascGhost = ['preto', 'azulMarinho', 'vermelho', 'azulRoyal', 'rosaPink', 'laranja', 'amareloCanario', 'cinzaMescla', 'branco']
 const colorsFemGhost = ['preto', 'branco']
 
 export const printfulApi = {
@@ -250,4 +250,9 @@ export const printfulApi = {
             console.error(error);
         }
     }
+}
+
+export const createPrintfulMockups = async (product: any, designUrls: any) => {
+    const tasks = await printfulApi.createMockups(designUrls.designFront, designUrls.designBack);
+    return await printfulApi.getTask(tasks.map(task => task.id), !!product.designBack);
 }
