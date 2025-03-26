@@ -18,6 +18,23 @@ function getShopifyClient() {
     });
 }
 
+const shopifyApi = async (endpoint: string, body?: any) => {
+    const options: any = {
+        headers: {
+            'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+
+    if (body) {
+        options.method = 'POST';
+        options.body = JSON.stringify(body);
+    }
+
+    return await (await fetch(`https://${process.env.SHOPIFY_SHOPNAME}/admin/api/${process.env.SHOPIFY_VERSION}/${endpoint}.json`, options)).json();
+}
+
 export async function addTracking(orderId: number, dimonaOrderId: string): Promise<string> {
     try {
         const shopifyClient = getShopifyClient();
@@ -252,58 +269,65 @@ export async function createProduct(product, mockups) {
             })
         })
 
-        const productResponse: any = await (await fetch(`https://aispirit.myshopify.com/admin/api/2025-04/products.json`, {
-            method: 'POST',
-            headers: {
-                'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "product": {
-                    "status": "draft",
-                    "title": product.title,
-                    "body_html": product.description,
-                    "vendor": "AiSpirit",
-                    "variants": variants,
-                    "options": options,
-                    "images": [
-                        // Product cover
-                        { src: mockups.mascGhost.preto },
-                        ...mockups.models.map(url => ({ src: url })),
-                        ...Object.values(mockups.femGhost).map(value => ({ src: value })),
-                    ]
-                }
-            })
-        })).json();
+
+
+        // Create product
+        const productResponse: any = await shopifyApi('products', {
+            "product": {
+                "status": product.draft ? 'draft' : 'active',
+                "title": `${product.title} #${product.tag}`,
+                "body_html": product.description,
+                "vendor": "AiSpirit",
+                "variants": variants,
+                "options": options,
+                "tags": product.tags,
+                "images": [
+                    // Product cover
+                    { src: mockups.mascGhost.preto },
+                    ...mockups.models.map(url => ({ src: url })),
+                    ...Object.values(mockups.femGhost).map(value => ({ src: value })),
+                ]
+            }
+        });
+
+        console.log('Product response:', productResponse);
 
         const createdVariants = productResponse.product.variants;
         const createdProductId = productResponse.product.id;
 
         const colorKeys = Object.keys(variantsImagesPerId);
-        let imagesResponse: any;
+        let imagesResponse = [];
 
+        // Add variants covers
         for (let i = 0; i < colorKeys.length; i++) {
             const key = colorKeys[i];
             const variantIds = variantsImagesPerId[key].map(variantPosition => createdVariants[variantPosition].id);
 
-            imagesResponse = await (await fetch(`https://aispirit.myshopify.com/admin/api/2025-04/products/${createdProductId}/images.json`, {
-                method: 'POST',
-                headers: {
-                    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    "image": {
-                        "src": mockups.mascGhost[key],
-                        "variant_ids": variantIds
-                    }
-                }),
-            })).json();
+            imagesResponse.push(await shopifyApi(`products/${createdProductId}/images`, {
+                "image": {
+                    "src": mockups.mascGhost[key],
+                    "variant_ids": variantIds
+                }
+            }));
         };
 
-        return imagesResponse;
+        console.log('Images response:', imagesResponse);
+
+        // Add product to collection
+        let collectionResponse;
+        if (product.collection)
+            collectionResponse = await shopifyApi('collects', {
+                "collect": {
+                    "product_id": createdProductId,
+                    "collection_id": parseInt(product.collection)
+                }
+            });
+
+        return {
+            productResponse,
+            imagesResponse,
+            collectionResponse
+        };
     }
     catch (error) {
         console.error('Error on Shopify create product:', error);
