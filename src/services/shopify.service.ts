@@ -331,7 +331,7 @@ export async function createProduct(product, mockups) {
     }
     catch (error) {
         console.error('Error on Shopify create product:', error);
-        return error;
+        throw { message: 'Error on Shopify create product:' + error };
     }
 }
 

@@ -103,6 +103,8 @@ app.http('insert-product', {
 
             const response = await insertProduct(product);
 
+            if (!Object.keys(response).length) throw { message: 'Empty response' };
+
             return {
                 status: 200,
                 body: JSON.stringify(response),
@@ -114,7 +116,15 @@ app.http('insert-product', {
             };
         } catch (error) {
             context.error(error);
-            return { status: 500, body: `Error uploading file: ${error.message}` };
+            return {
+                status: 500,
+                body: `Error creating product: ${error.message}`,
+                headers: {
+                    'Access-Control-Allow-Origin': '*',  // Allow all origins
+                    'Access-Control-Allow-Methods': 'POST',  // Allowed methods
+                    'Access-Control-Allow-Headers': 'Content-Type',  // Allowed headers
+                }
+            };
         }
     }
 })

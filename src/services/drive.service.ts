@@ -146,6 +146,7 @@ export const uploadToGoogleDrive = async (file) => {
     }
     catch (error) {
         console.error('Error uploading to Google Drive:', error.message);
+        throw { message: 'Error uploading to Google Drive: ' + error.message };
     }
 }
 

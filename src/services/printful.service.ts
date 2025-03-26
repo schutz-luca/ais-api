@@ -259,5 +259,6 @@ export const createPrintfulMockups = async (product: any, designUrls: any) => {
     }
     catch (error) {
         console.error('Error on createPrintfulMockups:', error);
+        throw { message: 'Error on Printful mockups creation: ' + error.message }; 
     }
 }
