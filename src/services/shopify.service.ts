@@ -5,10 +5,10 @@ import { ShopifyOrder } from "../model/shopify.model";
 import { getFrontMockupQuery } from '../utils/graphqlQueries';
 import { normalizePt } from '../utils/normalizePt';
 import { log } from '../utils/log';
-import { getDesignInDrive } from './drive.service';
+import { getDesignInDrive, uploadDesigns } from './drive.service';
 import { correlateProduct } from './dimona.service';
 import { mergeArrays } from '../utils/mergeArrays';
-import { colorsMascGhost } from './printful.service';
+import { colorsMascGhost, createPrintfulMockups } from './printful.service';
 import { normalizeCamelCase } from '../utils/normalizeCamelCase';
 
 function getShopifyClient() {
@@ -333,4 +333,15 @@ export async function createProduct(product, mockups) {
         console.error('Error on Shopify create product:', error);
         return error;
     }
+}
+
+export async function insertProduct(product) {
+    // Upload designs to Drive
+    const designUrls = await uploadDesigns(product.sku, product.designFront, product.designBack);
+
+    // Create mockups on Printful
+    const mockups = await createPrintfulMockups(product, designUrls);
+
+    // Create product on Shopify
+    return await createProduct(product, mockups);
 }

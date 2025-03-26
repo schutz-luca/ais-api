@@ -1,8 +1,9 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
 import { createDimonaOrder, createOrdersFromShopify } from '../services/dimona.service';
 import { ShopifyOrder } from '../model/shopify.model';
-import { findShopifyOrder } from '../services/shopify.service';
+import { findShopifyOrder, insertProduct } from '../services/shopify.service';
 import { addNFe } from '../services/bling.service';
+import { extractFormDataTexts } from '../utils/extractFormDataTexts';
 
 export async function handlerCreateAll(_, context: InvocationContext): Promise<HttpResponseInit> {
     try {
@@ -49,4 +50,55 @@ app.get('create-dimona-orders', {
 app.post('order-paid', {
     authLevel: 'anonymous',
     handler: handlerOrderPaid
+})
+
+const {
+    default: parseMultipartFormData,
+} = require("@anzp/azure-function-multipart");
+
+const getFormFile = async (formData: FormData, name: string) => {
+    const file: any = formData.get(name);
+
+    if (!file) return;
+
+    const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+    return {
+        fieldname: '',
+        originalname: file.name,
+        mimetype: `image/${file.name.split('.')[file.name.split('.').length - 1]}`,
+        size: file.size,
+        buffer: fileBuffer,
+    }
+}
+
+app.http('insert-product', {
+    authLevel: 'anonymous',
+    methods: ['POST'],
+    handler: async (request: HttpRequest, context: InvocationContext) => {
+        try {
+            const formData = await request.formData();
+
+            const designFront = await getFormFile(formData, 'designFront');
+            const designBack = await getFormFile(formData, 'designBack');
+
+            const fields = extractFormDataTexts(formData);
+
+            const product = {
+                ...fields,
+                designFront,
+                designBack
+            }
+
+            const response = await insertProduct(product);
+
+            return {
+                status: 200,
+                body: JSON.stringify(response),
+            };
+        } catch (error) {
+            context.error(error);
+            return { status: 500, body: `Error uploading file: ${error.message}` };
+        }
+    }
 })

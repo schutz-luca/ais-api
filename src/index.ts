@@ -36,8 +36,6 @@ app.get('/shopify-order', getShopifyOrder)
 
 app.get('/collections', getCollectionsEndpoint)
 
-app.post('/upload-file', upload.single("file"), uploadFileEndpoint)
-
 app.post('/insert-product', upload.fields([
   { name: 'designFront' },
   { name: 'designBack' }

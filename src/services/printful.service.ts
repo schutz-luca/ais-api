@@ -253,6 +253,11 @@ export const printfulApi = {
 }
 
 export const createPrintfulMockups = async (product: any, designUrls: any) => {
-    const tasks = await printfulApi.createMockups(designUrls.designFront, designUrls.designBack);
-    return await printfulApi.getTask(tasks.map(task => task.id), !!product.designBack);
+    try {
+        const tasks = await printfulApi.createMockups(designUrls.designFront, designUrls.designBack);
+        return await printfulApi.getTask(tasks.map(task => task.id), !!product.designBack);
+    }
+    catch (error) {
+        console.error('Error on createPrintfulMockups:', error);
+    }
 }
