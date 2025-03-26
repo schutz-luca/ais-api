@@ -1,7 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
 import { createDimonaOrder, createOrdersFromShopify } from '../services/dimona.service';
 import { ShopifyOrder } from '../model/shopify.model';
-import { findShopifyOrder, insertProduct } from '../services/shopify.service';
+import { findShopifyOrder, getCollections, insertProduct } from '../services/shopify.service';
 import { addNFe } from '../services/bling.service';
 import { extractFormDataTexts } from '../utils/extractFormDataTexts';
 
@@ -52,10 +52,6 @@ app.post('order-paid', {
     handler: handlerOrderPaid
 })
 
-const {
-    default: parseMultipartFormData,
-} = require("@anzp/azure-function-multipart");
-
 const getFormFile = async (formData: FormData, name: string) => {
     const file: any = formData.get(name);
 
@@ -71,6 +67,21 @@ const getFormFile = async (formData: FormData, name: string) => {
         buffer: fileBuffer,
     }
 }
+
+app.get('collections', {
+    authLevel: 'anonymous',
+    handler: async () => {
+        const collections = await getCollections();
+        return {
+            jsonBody: collections,
+            headers: {
+                'Access-Control-Allow-Origin': '*',  // Allow all origins
+                'Access-Control-Allow-Methods': 'GET',  // Allowed methods
+                'Access-Control-Allow-Headers': 'Content-Type',  // Allowed headers
+            },
+        }
+    },
+});
 
 app.http('insert-product', {
     authLevel: 'anonymous',
@@ -95,6 +106,11 @@ app.http('insert-product', {
             return {
                 status: 200,
                 body: JSON.stringify(response),
+                headers: {
+                    'Access-Control-Allow-Origin': '*',  // Allow all origins
+                    'Access-Control-Allow-Methods': 'POST',  // Allowed methods
+                    'Access-Control-Allow-Headers': 'Content-Type',  // Allowed headers
+                },
             };
         } catch (error) {
             context.error(error);
