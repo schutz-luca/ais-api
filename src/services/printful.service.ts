@@ -1,180 +1,220 @@
+import { getImageDimensions } from "../utils/getImageDimensions";
 import { wait } from "../utils/wait";
 
 export const colorsMascGhost = ['preto', 'azulMarinho', 'vermelho', 'azulRoyal', 'rosaPink', 'laranja', 'amareloCanario', 'cinzaMescla', 'branco']
 const colorsFemGhost = ['preto', 'branco']
 
 export const printfulApi = {
-    createMockups: async (designFront: string, designBack: string) => {
+    createMockups: async (designFront: string, designBack: string, product) => {
         const body = {
             "format": "jpg",
             "products": []
         }
 
-        if (designFront) body.products = body.products.concat([
-            // FRONT GHOST MALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [6400],
-                "catalog_product_id": 71,
-                "catalog_variant_ids": [4020, 4015, 4145, 4147, 4130, 4185, 4045, 4175, 4115],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "front",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designFront
-                            }
-                        ]
-                    }
-                ]
-            },
-            // FRONT MOCKUP MALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [891, 798, 839, 758, 1127],
-                "catalog_product_id": 71,
-                "catalog_variant_ids": [4020, 4015],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "front",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designFront
-                            }
-                        ]
-                    }
-                ]
-            },
-            // FRONT GHOST FEMALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [14033],
-                "catalog_product_id": 567,
-                "catalog_variant_ids": [14322, 14362],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "front",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designFront,
-                            }
-                        ]
-                    }
-                ]
-            },
-            // FRONT MOCKUPS FEMALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [14040, 14042, 14051, 14052],
-                "catalog_product_id": 567,
-                "catalog_variant_ids": [14322, 14362],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "front",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designFront,
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]);
-        if (designBack) body.products = body.products.concat([
-            // BACK GHOST MALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [6401],
-                "catalog_product_id": 71,
-                "catalog_variant_ids": [4020, 4015, 4145, 4147, 4130, 4185, 4045, 4175, 4115],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "back",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designBack
-                            }
-                        ]
-                    }
-                ]
-            },
-            // BACK MOCKUP MALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [892, 922, 924, 759, 759],
-                "catalog_product_id": 71,
-                "catalog_variant_ids": [4020, 4015],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "back",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designBack
-                            }
-                        ]
-                    }
-                ]
-            },
-            // BACK GHOST FEMALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [14034],
-                "catalog_product_id": 567,
-                "catalog_variant_ids": [14322, 14362],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "back",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designBack
-                            }
-                        ]
-                    }
-                ]
-            },
-            // BACK MOCKUPS FEMALE
-            {
-                "source": "catalog",
-                "mockup_style_ids": [14044, 14045, 14054],
-                "catalog_product_id": 567,
-                "catalog_variant_ids": [14322, 14362],
-                "orientation": "vertical",
-                "placements": [
-                    {
-                        "placement": "back",
-                        "technique": "dtg",
-                        "layers": [
-                            {
-                                "type": "file",
-                                "url": designBack
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]);
+        if (designFront) {
+            const imgSizes = await getImageDimensions(product.designFront.buffer);
 
+            const calculatePosition = () => {
+                const maxHeight = 16;
+                const maxWidth = 12;
+                const offset = 2;
+
+                let width;
+                let height;
+                let top;
+                let left;
+
+                if (imgSizes.height > imgSizes.width) {
+                    height = maxHeight - offset;
+                    width = (imgSizes.width * height) / imgSizes.height;
+
+                }
+                else {
+                    width = 12;
+                    height = (imgSizes.height * width) / imgSizes.width;
+                }
+                top = offset;
+                left = (maxWidth - width) / 2;
+
+                return {
+                    width,
+                    height,
+                    top,
+                    left
+                }
+            }
+
+            body.products = body.products.concat([
+                // FRONT GHOST MALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [6400],
+                    "catalog_product_id": 71,
+                    "catalog_variant_ids": [4020, 4015, 4145, 4147, 4130, 4185, 4045, 4175, 4115],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "front",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designFront,
+                                    "position": calculatePosition()
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // FRONT MOCKUP MALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [891, 798, 839, 758, 1127],
+                    "catalog_product_id": 71,
+                    "catalog_variant_ids": [4020],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "front",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designFront,
+                                    "position": calculatePosition()
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // FRONT GHOST FEMALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [539],
+                    "catalog_product_id": 12,
+                    "catalog_variant_ids": [629, 597],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "front",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designFront,
+                                    "position": calculatePosition()
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // FRONT MOCKUPS FEMALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [728, 20276, 20279, 498],
+                    "catalog_product_id": 12,
+                    "catalog_variant_ids": [629],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "front",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designFront,
+                                    "position": calculatePosition()
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]);
+        }
+        if (designBack) {
+            body.products = body.products.concat([
+                // BACK GHOST MALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [6401],
+                    "catalog_product_id": 71,
+                    "catalog_variant_ids": [4020, 4015, 4145, 4147, 4130, 4185, 4045, 4175, 4115],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "back",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designBack
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // BACK MOCKUP MALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [892, 922, 924, 759, 759],
+                    "catalog_product_id": 71,
+                    "catalog_variant_ids": [4020],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "back",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designBack
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // BACK GHOST FEMALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [540],
+                    "catalog_product_id": 12,
+                    "catalog_variant_ids": [629, 597],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "back",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designBack
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // BACK MOCKUPS FEMALE
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [20272, 20278, 499],
+                    "catalog_product_id": 12,
+                    "catalog_variant_ids": [629],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "back",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designBack
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]);
+        }
         const result: any = await (await fetch(`${process.env.PRINTFUL_API_BASE}/mockup-tasks`, {
             method: 'POST',
             headers: {
@@ -254,11 +294,11 @@ export const printfulApi = {
 
 export const createPrintfulMockups = async (product: any, designUrls: any) => {
     try {
-        const tasks = await printfulApi.createMockups(designUrls.designFront, designUrls.designBack);
+        const tasks = await printfulApi.createMockups(designUrls.designFront, designUrls.designBack, product);
         return await printfulApi.getTask(tasks.map(task => task.id), !!product.designBack);
     }
     catch (error) {
         console.error('Error on createPrintfulMockups:', error);
-        throw { message: 'Error on Printful mockups creation: ' + error.message }; 
+        throw { message: 'Error on Printful mockups creation: ' + error.message };
     }
 }

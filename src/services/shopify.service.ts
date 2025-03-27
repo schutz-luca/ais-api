@@ -231,6 +231,13 @@ export async function createProduct(product, mockups) {
             }
         ];
 
+        const extraChargeSizes = ['XGG', 'G1', 'G2', 'G3'];
+        const extraChargePrice = 15;
+        const checkExtraCharge = (size: string, price: string) => {
+            const priceNumber = parseFloat(price);
+            return `${extraChargeSizes.includes(size) ? priceNumber + extraChargePrice : priceNumber}`
+        }
+
         const options = [
             {
                 name: 'Gênero',
@@ -258,7 +265,7 @@ export async function createProduct(product, mockups) {
 
                     variants.push({
                         title: `${gender.colors} / ${color} / ${size}`,
-                        price: product.price,
+                        price: checkExtraCharge(size, product.price),
                         option1: gender.title,
                         option2: color,
                         option3: size,
