@@ -1,9 +1,9 @@
-import sharp from "sharp";
+const { imageSize } = require('image-size');
 
-export async function getImageDimensions(filePath: string) {
+export async function getImageDimensions(file) {
     try {
-        const metadata = await sharp(filePath).metadata();
-        return { width: metadata.width, height: metadata.height }
+        const dimensions = imageSize(file);
+        return { width: dimensions.width, height: dimensions.height }
     } catch (error) {
         console.log('Error on getImageDimensions:', error);
     }

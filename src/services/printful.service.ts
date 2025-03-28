@@ -111,7 +111,7 @@ export const printfulApi = {
                 // FRONT MOCKUPS FEMALE
                 {
                     "source": "catalog",
-                    "mockup_style_ids": [728, 20275, 20279, 496],
+                    "mockup_style_ids": [728, 20273, 20279, 496],
                     "catalog_product_id": 12,
                     "catalog_variant_ids": [629],
                     "orientation": "vertical",
