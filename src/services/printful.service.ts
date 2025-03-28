@@ -111,7 +111,7 @@ export const printfulApi = {
                 // FRONT MOCKUPS FEMALE
                 {
                     "source": "catalog",
-                    "mockup_style_ids": [728, 20276, 20279, 498],
+                    "mockup_style_ids": [728, 20275, 20279, 496],
                     "catalog_product_id": 12,
                     "catalog_variant_ids": [629],
                     "orientation": "vertical",
@@ -248,7 +248,9 @@ export const printfulApi = {
                 const mockups = {
                     femGhost: {},
                     mascGhost: {},
-                    models: []
+                    models: [],
+                    mascMock: [],
+                    femMock: []
                 };
                 console.log('Tasks completed:', result);
                 result?.data?.map((product, index) => {
@@ -257,7 +259,9 @@ export const printfulApi = {
 
                     if (!hasBack) {
                         if (index === 0) key = 'mascGhost';
+
                         if (index === 2) key = 'femGhost';
+
                     }
                     // When there's back design, set it as variant image
                     else {
@@ -265,18 +269,21 @@ export const printfulApi = {
                         if (index === 6) key = 'femGhost';
                     }
 
+                    if (index === 1) key = 'mascMock';
+                    if (index === 3) key = 'femMock'
+
                     product.catalog_variant_mockups.map((variant, index) => {
                         variant.mockups.map(mockup => {
                             // If male mock, find its Dimona color
                             if (key === 'mascGhost') mockups[key][colorsMascGhost[index]] = mockup.mockup_url;
 
                             // Female mocks only has black and white, if it's not on these colors, add to models
-                            if (key === 'femGhost') {
+                            else if (key === 'femGhost') {
                                 if (!!colorsFemGhost[index]) mockups[key][colorsFemGhost[index]] = mockup.mockup_url;
                                 else key = 'models'
                             }
 
-                            if (key === 'models') mockups[key].push(mockup.mockup_url);
+                            else mockups[key].push(mockup.mockup_url);
                         })
                     })
                 });

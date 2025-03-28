@@ -291,8 +291,13 @@ export async function createProduct(product, mockups) {
                 "images": [
                     // Product cover
                     { src: mockups.mascGhost.preto },
-                    ...mockups.models.map(url => ({ src: url })),
+                    { src: mockups.femMock[1] },
+                    { src: process.env.SHOPIFY_MEASURES_IMG },
+                    { src: mockups.mascMock[0] },
                     ...Object.values(mockups.femGhost).map(value => ({ src: value })),
+                    ...Object.values(mockups.femMock).map((value, index) => index !== 1 && ({ src: value })),
+                    ...Object.values(mockups.mascMock).map((value, index) => index !== 0 && ({ src: value })),
+                    ...mockups.models.map(url => ({ src: url })),
                 ]
             }
         });
