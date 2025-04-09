@@ -213,18 +213,23 @@ export async function createProduct(product, mockups) {
             taxable: true,
         }
 
+        const allColors = colorsMascGhost;
+
         const variantsPerGender = [
             {
-                title: 'Masculino',
-                colors: ['Preto', 'Branco', 'Amarelo Canário', 'Laranja', 'Vermelho', 'Rosa Pink', 'Azul Royal', 'Azul Marinho', 'Cinza Mescla'],
-                sizes: ['P', 'M', 'G', 'GG', 'XGG']
-            },
-            {
+                id: 'fem',
                 title: 'Feminino',
                 colors: ['Preto', 'Branco', 'Amarelo Canário', 'Laranja', 'Vermelho', 'Rosa Pink', 'Azul Royal', 'Azul Marinho', 'Cinza Mescla'],
                 sizes: ['P', 'M', 'G', 'GG']
             },
             {
+                id: 'masc',
+                title: 'Masculino',
+                colors: ['Preto', 'Branco', 'Amarelo Canário', 'Laranja', 'Vermelho', 'Rosa Pink', 'Azul Royal', 'Azul Marinho', 'Cinza Mescla'],
+                sizes: ['P', 'M', 'G', 'GG', 'XGG']
+            },
+            {
+                id: 'masc',
                 title: 'Plus Size',
                 colors: ['Preto', 'Branco'],
                 sizes: ['G1', 'G2', 'G3', 'G4']
@@ -253,15 +258,21 @@ export async function createProduct(product, mockups) {
             }
         ];
 
-        const variantsImagesPerId = {};
-        colorsMascGhost.map(key => variantsImagesPerId[key] = []);
+        // Initialize `variantsCoversPerId`
+        const variantsCoversPerId: any = { masc: {}, fem: {} };
+        allColors.forEach(color => {
+            variantsCoversPerId.masc[color] = [];
+            variantsCoversPerId.fem[color] = []
+        });
+
 
         const variants = [];
         variantsPerGender.forEach(gender => {
             gender.colors.forEach(color => {
                 gender.sizes.forEach(size => {
-                    const id = variants.length;
-                    variantsImagesPerId[normalizeCamelCase(color)].push(id);
+                    const position = variants.length;
+                    // Group variant position by gender/color
+                    variantsCoversPerId[gender.id][normalizeCamelCase(color)].push(position);
 
                     variants.push({
                         title: `${gender.colors} / ${color} / ${size}`,
@@ -269,7 +280,7 @@ export async function createProduct(product, mockups) {
                         option1: gender.title,
                         option2: color,
                         option3: size,
-                        sku: `${product.sku}-${id + 1}`,
+                        sku: `${product.sku}-${position + 1}`,
                         ...variantDefault
                     })
                 })
@@ -307,21 +318,31 @@ export async function createProduct(product, mockups) {
         const createdVariants = productResponse.product.variants;
         const createdProductId = productResponse.product.id;
 
-        const colorKeys = Object.keys(variantsImagesPerId);
         let imagesResponse = [];
 
-        // Add variants covers
-        for (let i = 0; i < colorKeys.length; i++) {
-            const key = colorKeys[i];
-            const variantIds = variantsImagesPerId[key].map(variantPosition => createdVariants[variantPosition].id);
+        for (let i = 0; i < allColors.length; i++) {
+            const currentColor = allColors[i];
+            const mascVariantIds = variantsCoversPerId.masc[currentColor].map(variantPosition => createdVariants[variantPosition].id);
+            const femVariantIds = variantsCoversPerId.fem[currentColor].map(variantPosition => createdVariants[variantPosition].id);
 
+            // Add male variants covers
             imagesResponse.push(await shopifyApi(`products/${createdProductId}/images`, {
                 "image": {
-                    "src": mockups.mascGhost[key],
-                    "variant_ids": variantIds
+                    "src": mockups.mascGhost[currentColor],
+                    "variant_ids": mascVariantIds
+                }
+            }));
+
+            // Add female variants covers
+            imagesResponse.push(await shopifyApi(`products/${createdProductId}/images`, {
+                "image": {
+                    // If there is no ghost mockup to female, use the male corresponding
+                    "src": mockups.femGhost[currentColor] ?? mockups.mascGhost[currentColor],
+                    "variant_ids": femVariantIds
                 }
             }));
         };
+
 
         console.log('Images response:', imagesResponse);
 
