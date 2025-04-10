@@ -71,7 +71,7 @@ export const printfulApi = {
                     "source": "catalog",
                     "mockup_style_ids": [891, 798, 839, 758, 1127],
                     "catalog_product_id": 71,
-                    "catalog_variant_ids": [4020],
+                    "catalog_variant_ids": [4015],
                     "orientation": "vertical",
                     "placements": [
                         {
@@ -111,7 +111,7 @@ export const printfulApi = {
                 // FRONT MOCKUPS FEMALE
                 {
                     "source": "catalog",
-                    "mockup_style_ids": [728, 20273, 20279, 496],
+                    "mockup_style_ids": [20273, 20279, 496],
                     "catalog_product_id": 12,
                     "catalog_variant_ids": [629],
                     "orientation": "vertical",
@@ -128,7 +128,49 @@ export const printfulApi = {
                             ]
                         }
                     ]
-                }
+                },
+                // FRONT MOCKUPS FEMALE LIFESTYLE (MALE PRODUCT)
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [768, 772, 788],
+                    "catalog_product_id": 71,
+                    "catalog_variant_ids": [4015],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "front",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designFront,
+                                    "position": calculatePosition()
+                                }
+                            ]
+                        }
+                    ]
+                },
+                // FRONT MOCKUPS FEMALE LIFESTYLE (FEMALE PRODUCT)
+                {
+                    "source": "catalog",
+                    "mockup_style_ids": [728, 730],
+                    "catalog_product_id": 12,
+                    "catalog_variant_ids": [629],
+                    "orientation": "vertical",
+                    "placements": [
+                        {
+                            "placement": "front",
+                            "technique": "dtg",
+                            "layers": [
+                                {
+                                    "type": "file",
+                                    "url": designFront,
+                                    "position": calculatePosition()
+                                }
+                            ]
+                        }
+                    ]
+                },
             ]);
         }
         if (designBack) {
@@ -225,6 +267,7 @@ export const printfulApi = {
             body: JSON.stringify(body)
         })).json();
 
+        if (result?.error) throw result.error;
         return result?.data;
     },
     getTask: async (ids: string[], hasBack: boolean) => {
@@ -250,7 +293,8 @@ export const printfulApi = {
                     mascGhost: {},
                     models: [],
                     mascMock: [],
-                    femMock: []
+                    femMock: [],
+                    femMockLifestyle: []
                 };
                 console.log('Tasks completed:', result);
                 result?.data?.map((product, index) => {
@@ -265,12 +309,13 @@ export const printfulApi = {
                     }
                     // When there's back design, set it as variant image
                     else {
-                        if (index === 4) key = 'mascGhost';
-                        if (index === 6) key = 'femGhost';
+                        if (index === 6) key = 'mascGhost';
+                        if (index === 8) key = 'femGhost';
                     }
 
                     if (index === 1) key = 'mascMock';
                     if (index === 3) key = 'femMock'
+                    if (index === 4 || index === 5) key = 'femMockLifestyle'
 
                     product.catalog_variant_mockups.map((variant, index) => {
                         variant.mockups.map(mockup => {

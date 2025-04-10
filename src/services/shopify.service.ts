@@ -10,6 +10,7 @@ import { correlateProduct } from './dimona.service';
 import { mergeArrays } from '../utils/mergeArrays';
 import { colorsMascGhost, createPrintfulMockups } from './printful.service';
 import { normalizeCamelCase } from '../utils/normalizeCamelCase';
+import { getRandom } from '../utils/getRandom';
 
 function getShopifyClient() {
     return new Shopify({
@@ -290,8 +291,6 @@ export async function createProduct(product, mockups) {
             })
         })
 
-
-
         // Create product
         const productResponse: any = await shopifyApi('products', {
             "product": {
@@ -305,11 +304,11 @@ export async function createProduct(product, mockups) {
                 "images": [
                     // Product cover
                     { src: mockups.mascGhost.preto },
-                    { src: mockups.femMock[1] },
+                    { src: mockups.femMockLifestyle[getRandom(mockups.femMockLifestyle.length - 1)] },
+                    { src: mockups.femMock[getRandom(mockups.femMock.length - 1)] },
                     { src: process.env.SHOPIFY_MEASURES_IMG },
                     { src: mockups.mascMock[0] },
-                    ...Object.values(mockups.femMock).map((value, index) => index !== 1 && ({ src: value })),
-                    ...Object.values(mockups.mascMock).map((value, index) => index !== 0 && ({ src: value })),
+                    { src: mockups.mascMock[getRandom(mockups.mascMock.length - 1, 0)] },
                     ...mockups.models.map(url => ({ src: url })),
                 ]
             }
