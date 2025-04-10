@@ -90,15 +90,19 @@ app.http('insert-product', {
         try {
             const formData = await request.formData();
 
-            const designFront = await getFormFile(formData, 'designFront');
-            const designBack = await getFormFile(formData, 'designBack');
+            const designFrontMale = await getFormFile(formData, 'designFrontMale');
+            const designBackMale = await getFormFile(formData, 'designBackMale');
+            const designFrontFemale = await getFormFile(formData, 'designFrontFemale');
+            const designBackFemale = await getFormFile(formData, 'designBackFemale');
 
             const fields = extractFormDataTexts(formData);
 
             const product = {
                 ...fields,
-                designFront,
-                designBack
+                designFrontMale,
+                designBackMale,
+                designFrontFemale,
+                designBackFemale
             }
 
             const response = await insertProduct(product);

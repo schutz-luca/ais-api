@@ -5,8 +5,10 @@ export const insertProductEndpoint = async (req, res) => {
     const product = {
         ...req.body,
         draft: !!req.body.draft,
-        designFront: req.files.designFront?.[0],
-        designBack: req.files.designBack?.[0],
+        designFrontMale: req.files.designFrontMale?.[0],
+        designBackMale: req.files.designBackMale?.[0],
+        designFrontFemale: req.files.designFrontFemale?.[0],
+        designBackFemale: req.files.designBackFemale?.[0],
     };
 
     console.log('Product:', product);

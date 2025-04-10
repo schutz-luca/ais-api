@@ -280,7 +280,7 @@ export async function createProduct(product, mockups) {
                         option1: gender.title,
                         option2: color,
                         option3: size,
-                        sku: `${product.sku}-${position + 1}`,
+                        sku: `C-${gender.title.charAt(0)}-${product.sku}-${position + 1}`,
                         ...variantDefault
                     })
                 })
@@ -370,7 +370,7 @@ export async function createProduct(product, mockups) {
 
 export async function insertProduct(product) {
     // Upload designs to Drive
-    const designUrls = await uploadDesigns(product.sku, product.designFront, product.designBack);
+    const designUrls = await uploadDesigns(product.sku, product.designFrontMale, product.designBackMale, product.designFrontFemale, product.designBackFemale);
 
     // Create mockups on Printful
     const mockups = await createPrintfulMockups(product, designUrls);

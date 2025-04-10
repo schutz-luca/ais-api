@@ -37,8 +37,10 @@ app.get('/shopify-order', getShopifyOrder)
 app.get('/collections', getCollectionsEndpoint)
 
 app.post('/insert-product', upload.fields([
-  { name: 'designFront' },
-  { name: 'designBack' }
+  { name: 'designFrontMale' },
+  { name: 'designBackMale' },
+  { name: 'designFrontFemale' },
+  { name: 'designBackFemale' }
 ]), insertProductEndpoint);
 
 app.post('/add-tracking', async (req, res) => {

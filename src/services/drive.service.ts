@@ -150,19 +150,30 @@ export const uploadToGoogleDrive = async (file) => {
     }
 }
 
-export const uploadDesigns = async (sku, front, back) => {
+export const uploadDesigns = async (sku, frontMale, backMale, frontFemale, backFemale) => {
     const urls: any = {};
 
-    if (front) {
-        front.originalname = `${sku}-DF`;
-        const url = await uploadToGoogleDrive(front);
-        urls.designFront = url;
+    if (frontMale) {
+        frontMale.originalname = `C-M-${sku}-DF`;
+        const url = await uploadToGoogleDrive(frontMale);
+        urls.designFrontMale = url;
 
     }
-    if (back) {
-        back.originalname = `${sku}-DB`;
-        const url = await uploadToGoogleDrive(back);
-        urls.designBack = url;
+    if (backMale) {
+        backMale.originalname = `C-M-${sku}-DB`;
+        const url = await uploadToGoogleDrive(backMale);
+        urls.designBackMale = url;
+    }
+    if (frontFemale) {
+        frontFemale.originalname = `C-F-${sku}-DF`;
+        const url = await uploadToGoogleDrive(frontFemale);
+        urls.designFrontFemale = url;
+
+    }
+    if (backFemale) {
+        backFemale.originalname = `C-F-${sku}-DB`;
+        const url = await uploadToGoogleDrive(backFemale);
+        urls.designBackFemale = url;
     }
 
     return urls;

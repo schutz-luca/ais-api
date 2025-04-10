@@ -12,7 +12,7 @@ export const printfulApi = {
         }
 
         if (designFront) {
-            const imgSizes = await getImageDimensions(product.designFront.buffer);
+            const imgSizes = await getImageDimensions(product.designFrontMale.buffer);
 
             const calculatePosition = () => {
                 const maxHeight = 16;
@@ -301,8 +301,8 @@ export const printfulApi = {
 
 export const createPrintfulMockups = async (product: any, designUrls: any) => {
     try {
-        const tasks = await printfulApi.createMockups(designUrls.designFront, designUrls.designBack, product);
-        return await printfulApi.getTask(tasks.map(task => task.id), !!product.designBack);
+        const tasks = await printfulApi.createMockups(designUrls.designFrontMale, designUrls.designBackMale, product);
+        return await printfulApi.getTask(tasks.map(task => task.id), !!product.designBackMale);
     }
     catch (error) {
         console.error('Error on createPrintfulMockups:', error);
