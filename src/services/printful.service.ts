@@ -48,7 +48,7 @@ export const printfulApi = {
                 // FRONT GHOST MALE
                 {
                     "source": "catalog",
-                    "mockup_style_ids": [6400],
+                    "mockup_style_ids": [1093],
                     "catalog_product_id": 71,
                     "catalog_variant_ids": [4020, 4015, 4145, 4147, 4130, 4185, 4045, 4175, 4115],
                     "orientation": "vertical",
@@ -178,7 +178,7 @@ export const printfulApi = {
                 // BACK GHOST MALE
                 {
                     "source": "catalog",
-                    "mockup_style_ids": [6401],
+                    "mockup_style_ids": [1098],
                     "catalog_product_id": 71,
                     "catalog_variant_ids": [4020, 4015, 4145, 4147, 4130, 4185, 4045, 4175, 4115],
                     "orientation": "vertical",

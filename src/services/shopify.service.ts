@@ -303,8 +303,8 @@ export async function createProduct(product, mockups) {
                 "tags": product.tags,
                 "images": [
                     // Product cover
-                    { src: mockups.mascGhost.preto },
-                    { src: mockups.femMockLifestyle[getRandom(mockups.femMockLifestyle.length - 1)] },
+                    { src: mockups.mascGhost.preto, position: 1 },
+                    { src: mockups.femMockLifestyle[getRandom(mockups.femMockLifestyle.length - 1)], position: 3 },
                     { src: mockups.femMock[getRandom(mockups.femMock.length - 1)] },
                     { src: process.env.SHOPIFY_MEASURES_IMG },
                     { src: mockups.mascMock[0] },
@@ -339,7 +339,8 @@ export async function createProduct(product, mockups) {
                 imagesResponse.push(await shopifyApi(`products/${createdProductId}/images`, {
                     "image": {
                         "src": mockups.femGhost[currentColor],
-                        "variant_ids": femVariantIds
+                        "variant_ids": femVariantIds,
+                        "position": currentColor === 'preto' ? 2 : undefined
                     }
                 }));
         };
