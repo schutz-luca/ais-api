@@ -272,7 +272,10 @@ export async function createProduct(product, mockups) {
                 gender.sizes.forEach(size => {
                     const position = variants.length;
                     // Group variant position by gender/color
-                    variantsCoversPerId[gender.id][normalizeCamelCase(color)].push(position);
+                    if (color === 'Preto' || color === 'Branco')
+                        variantsCoversPerId[gender.id][normalizeCamelCase(color)].push(position);
+                    else
+                        variantsCoversPerId.masc[normalizeCamelCase(color)].push(position);
 
                     variants.push({
                         title: `${gender.colors} / ${color} / ${size}`,
@@ -305,7 +308,6 @@ export async function createProduct(product, mockups) {
                     { src: mockups.femMock[1] },
                     { src: process.env.SHOPIFY_MEASURES_IMG },
                     { src: mockups.mascMock[0] },
-                    ...Object.values(mockups.femGhost).map(value => ({ src: value })),
                     ...Object.values(mockups.femMock).map((value, index) => index !== 1 && ({ src: value })),
                     ...Object.values(mockups.mascMock).map((value, index) => index !== 0 && ({ src: value })),
                     ...mockups.models.map(url => ({ src: url })),
@@ -334,13 +336,13 @@ export async function createProduct(product, mockups) {
             }));
 
             // Add female variants covers
-            imagesResponse.push(await shopifyApi(`products/${createdProductId}/images`, {
-                "image": {
-                    // If there is no ghost mockup to female, use the male corresponding
-                    "src": mockups.femGhost[currentColor] ?? mockups.mascGhost[currentColor],
-                    "variant_ids": femVariantIds
-                }
-            }));
+            if (mockups.femGhost[currentColor])
+                imagesResponse.push(await shopifyApi(`products/${createdProductId}/images`, {
+                    "image": {
+                        "src": mockups.femGhost[currentColor],
+                        "variant_ids": femVariantIds
+                    }
+                }));
         };
 
 
