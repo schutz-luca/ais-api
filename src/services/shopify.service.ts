@@ -303,8 +303,7 @@ export async function createProduct(product, mockups) {
                 "tags": product.tags,
                 "images": [
                     // Product cover
-                    { src: mockups.mascGhost.preto, position: 1 },
-                    { src: mockups.femMockLifestyle[getRandom(mockups.femMockLifestyle.length - 1)], position: 3 },
+                    { src: mockups.femMockLifestyle[getRandom(mockups.femMockLifestyle.length - 1)], position: 1 },
                     { src: mockups.femMock[getRandom(mockups.femMock.length - 1)] },
                     { src: process.env.SHOPIFY_MEASURES_IMG },
                     { src: mockups.mascMock[0] },
