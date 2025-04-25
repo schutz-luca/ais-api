@@ -237,7 +237,7 @@ export async function createProduct(product, mockups) {
             }
         ];
 
-        const extraChargeSizes = ['XGG', 'G1', 'G2', 'G3'];
+        const extraChargeSizes = ['XGG', 'G1', 'G2', 'G3', 'G4'];
         const extraChargePrice = 15;
         const checkExtraCharge = (size: string, price: string) => {
             const priceNumber = parseFloat(price);
