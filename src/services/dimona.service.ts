@@ -201,7 +201,7 @@ export async function createOrdersFromShopify() {
             }
         }
 
-        await log(LogsKind.INFO, 'Process completed', { summaries })
+        if (summaries.length) await log(LogsKind.INFO, 'Process completed', { summaries })
         return summaries
     }
     catch (error) {
