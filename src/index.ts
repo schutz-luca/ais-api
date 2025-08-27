@@ -5,8 +5,8 @@ import { orderPaidEndpoint } from './controllers/order-paid';
 import { addTracking, findShopifyOrder, getShopifyOrder } from './services/shopify.service';
 import { addNFe } from './services/bling.service';
 import { getCollectionsEndpoint } from './controllers/shopify/get-collections';
-import { uploadFileEndpoint } from './controllers/drive/upload-file';
 import { insertProductEndpoint } from './controllers/insert-product';
+import { getDesignInDrive } from './services/drive.service';
 const multer = require("multer");
 
 require('dotenv').config()
@@ -59,6 +59,13 @@ app.post('/add-nfe', async (req, res) => {
   const nfeStatus = await addNFe(order, dimonaOrderId)
 
   res.json({ nfeStatus })
+})
+
+app.post('/check-design', async (req, res) => {
+  const sku = req.body.sku as string;
+
+  const designs =  await getDesignInDrive(sku);
+  res.json({ designs })
 })
 
 app.listen(port, () =>
