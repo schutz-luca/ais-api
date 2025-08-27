@@ -78,7 +78,9 @@ export async function getDesignInDrive(sku: string) {
         supportsAllDrives: true,
         fields: 'files(id,webContentLink,name)',
     });
-    const files: any[] = res.data.files;
+
+    const regex = new RegExp(`^${handledSku}-D[FB](\\..+)?$`);
+    const files = res.data.files.filter(file => regex.test(file.name));
 
     await Promise.all(files.map(async (file: any) => {
         const fileName = (file.name as string).toLowerCase();
