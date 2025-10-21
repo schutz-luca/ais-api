@@ -63,14 +63,13 @@ export async function getDesignInDrive(sku: string) {
     let designs: string[] = [];
 
     // Fragment the sku with parts separated per "-"
-    let skuArray = sku.split('-')
+    let skuArray = sku.split('-');
 
     // If it has a 'P' (Plus Size) gender, replace it to 'M' to find the design into drive files
-    skuArray[1].replace('P', 'M');
+    if (skuArray[1] === 'P') skuArray[1] = 'M';
 
     // Remove variant fragment and join all parts
     const handledSku = skuArray.slice(0, -1).join('-');
-
 
     const res = await drive.files.list({
         q: `name contains '${handledSku}'`,
