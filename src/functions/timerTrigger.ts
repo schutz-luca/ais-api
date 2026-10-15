@@ -1,11 +1,10 @@
-import { app, InvocationContext } from "@azure/functions";
+import { app } from "@azure/functions";
 import { createOrdersFromShopify } from "../services/dimona.service";
+import { refreshBlingToken } from "../services/bling.service";
 
-export async function timerTrigger(_, context: InvocationContext): Promise<void> {
-    const prefix = `[CRON]`;
-    context.log(`${prefix} Running Timer Trigger...`);
-    const summaries = await createOrdersFromShopify();
-    context.log(`${prefix} Runned and created ${summaries.length} orders`, summaries);
+export async function timerTrigger(): Promise<void> {
+    await refreshBlingToken();
+    await createOrdersFromShopify('timer');
 }
 
 app.timer('timerTrigger', {

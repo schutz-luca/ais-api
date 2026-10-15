@@ -1,23 +1,18 @@
-import { sql } from "@vercel/postgres";
+import { sql } from '@vercel/postgres';
 
-export async function updateTokens(access: string, refresh: string) {
-    try {
-        const { rows } = await sql`UPDATE blingtokens SET access = ${access}, refresh = ${refresh} WHERE id = 0`;
-        return rows[0]
-    }
-    catch (error) {
-        console.error('Error on updateTokens:', error)
-    }
+export type Tokens = { access: string; refresh: string };
+
+export async function updateTokens(access: string, refresh: string): Promise<void> {
+    if (access.length > 3000 || refresh.length > 3000)
+        throw new Error('Bling OAuth token exceeds the supported 3,000 character limit');
+
+    const { rowCount } = await sql`UPDATE blingtokens SET access = ${access}, refresh = ${refresh} WHERE id = 0`;
+    if (rowCount !== 1) throw new Error(`Expected to update one Bling token row, updated ${rowCount}`);
 }
 
-type Tokens = { access: string, refresh: string }
-
 export async function getTokens(): Promise<Tokens> {
-    try {
-        const { rows } = await sql`select * from blingtokens`;
-        return rows[0] as Tokens
-    }
-    catch (error) {
-        console.error('Error on getTokens:', error)
-    }
+    const { rows } = await sql`SELECT access, refresh FROM blingtokens WHERE id = 0`;
+    const tokens = rows[0] as Tokens | undefined;
+    if (!tokens?.access || !tokens?.refresh) throw new Error('Bling OAuth tokens are missing from storage');
+    return tokens;
 }

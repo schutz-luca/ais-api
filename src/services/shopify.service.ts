@@ -1,10 +1,8 @@
 import Shopify from 'shopify-api-node';
-import { LogsKind } from '../db/logs';
 import { DimonaOrderItem } from '../dto/dimona.dto';
 import { ShopifyOrder } from "../model/shopify.model";
 import { getFrontMockupQuery } from '../utils/graphqlQueries';
 import { normalizePt } from '../utils/normalizePt';
-import { log } from '../utils/log';
 import { getDesignInDrive, uploadDesigns } from './drive.service';
 import { correlateProduct } from './dimona.service';
 import { mergeArrays } from '../utils/mergeArrays';
@@ -70,29 +68,6 @@ export async function addTracking(orderId: number, dimonaOrderId: string): Promi
 
 }
 
-export async function getCustomerCpf(graphqlId: string): Promise<string | undefined> {
-    const shopifyClient = getShopifyClient();
-
-    const result = await shopifyClient.graphql(`
-    {
-        order(id: "${graphqlId}") {
-          id
-          localizationExtensions(first: 5) {
-            edges {
-              node {
-                countryCode
-                purpose
-                title
-                value
-              }
-            }
-          }
-        }
-      }`);
-
-    return result.order.localizationExtensions.edges[0]?.node.value;
-}
-
 export async function findShopifyOrder(orderId: number) {
     const shopifyClient = getShopifyClient();
     const order = await shopifyClient.order.get(orderId) as unknown as ShopifyOrder;
@@ -137,8 +112,9 @@ async function getShopifyMock(shopifyClient: Shopify, productId: number, imageId
             return [mockFront?.url, mockBack.src]
         }
     }
-    catch (error) {
-        await log(LogsKind.ERROR, 'Error on handleShopifyMock: ', error)
+    catch {
+        // Product mockups are optional in the Dimona order payload; avoid a
+        // separate operational log for each image lookup failure.
         return undefined
     }
 }

@@ -33,6 +33,9 @@ export interface DimonaOrderItem {
 }
 
 export interface DimonaOrderAddress {
+    name: string;
+    phone: string;
+    country: string;
     zipcode: string;
     state: string;
     city: string;

@@ -17,11 +17,16 @@ export async function orderPaidEndpoint(req: Request, res: Response) {
     try {
         const shopifyOrder: ShopifyOrder = req.body
         const dimonaResult = await createDimonaOrder(shopifyOrder);
-        await log(LogsKind.INFO, `order-paid`, dimonaResult);
         res.json(dimonaResult)
     }
     catch (error: any) {
-        await log(LogsKind.ERROR, 'Error on orderPaidEndpoint:', error);
+        await log(LogsKind.ERROR, 'Não foi possível processar o pedido recebido da Shopify.', {
+            event: 'shopify_order_processing',
+            shopifyOrderId: req.body?.id ? String(req.body.id) : undefined,
+            outcome: 'failed',
+            stage: 'webhook',
+            failureCode: 'order_paid_endpoint_failed',
+        });
         res
             .status(error?.status || 500)
             .send(error)
