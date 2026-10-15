@@ -19,7 +19,11 @@ import {
 } from '../utils/dashboardAuth';
 
 function dashboardAuthorized(request: HttpRequest): boolean {
-    return isDashboardOriginAllowed(request.headers.get('origin'))
+    const origin = request.headers.get('origin');
+    // Same-origin GETs commonly omit Origin. The dashboard now reaches this
+    // function through Vercel's same-origin proxy, so require an allowed origin
+    // when present and always require the signed session cookie.
+    return (!origin || isDashboardOriginAllowed(origin))
         && isDashboardSessionValid(request.headers.get('cookie') || undefined);
 }
 
